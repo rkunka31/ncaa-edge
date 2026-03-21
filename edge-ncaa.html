@@ -7,24 +7,24 @@
 <style>
 /* ── TOKENS ── */
 :root {
-  --bg:       #0d0f12;
-  --card:     #161920;
-  --card2:    #1d2028;
-  --line:     #272c36;
-  --line2:    #323844;
-  --accent:   #00d4aa;
-  --blue:     #4aa8ff;
-  --green:    #2ecc71;
-  --red:      #e74c3c;
-  --yellow:   #f39c12;
-  --purple:   #9b59b6;
-  --live-red: #ff3b3b;
-  /* Text — HIGH CONTRAST */
-  --t1:  #ffffff;          /* team names, primary */
-  --t2:  #d0d5de;          /* secondary labels */
-  --t3:  #8892a0;          /* muted / meta */
-  --t4:  #505868;          /* very muted */
-  --mono: -apple-system, 'Helvetica Neue', Arial, sans-serif;  /* clean sans for readability */
+  --bg:       #f5f6f8;
+  --card:     #ffffff;
+  --card2:    #f0f2f5;
+  --line:     #e4e7ed;
+  --line2:    #d1d5db;
+  --accent:   #0070f3;
+  --blue:     #0070f3;
+  --green:    #16a34a;
+  --red:      #dc2626;
+  --yellow:   #d97706;
+  --purple:   #7c3aed;
+  --live-red: #dc2626;
+  /* Text — HIGH CONTRAST on light */
+  --t1:  #0f1117;          /* team names, primary */
+  --t2:  #374151;          /* secondary labels */
+  --t3:  #6b7280;          /* muted / meta */
+  --t4:  #9ca3af;          /* very muted */
+  --mono: -apple-system, 'Helvetica Neue', Arial, sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
@@ -66,7 +66,7 @@ body {
 .bankroll-btn .amt { color: var(--accent); }
 .live-btn {
   display: flex; align-items: center; gap: 5px;
-  background: rgba(255,59,59,0.12); border: 1px solid rgba(255,59,59,0.3);
+  background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.3);
   border-radius: 8px; padding: 6px 10px;
   font-size: 11px; font-weight: 800; color: var(--live-red);
   cursor: pointer; letter-spacing: 0.3px;
@@ -131,9 +131,9 @@ body {
   color: var(--t3); transition: all .12s; white-space: nowrap;
 }
 .pill:active { transform: scale(.96); }
-.pill.on { background: rgba(0,212,170,.12); border-color: rgba(0,212,170,.35); color: var(--accent); }
-.pill.live-pill { color: var(--live-red); border-color: rgba(255,59,59,.25); background: rgba(255,59,59,.08); }
-.pill.live-pill.on { background: rgba(255,59,59,.15); border-color: rgba(255,59,59,.5); }
+.pill.on { background: rgba(0,112,243,0.08); border-color: rgba(0,112,243,0.35); color: var(--accent); }
+.pill.live-pill { color: var(--live-red); border-color: rgba(220,38,38,0.25); background: rgba(220,38,38,0.07); }
+.pill.live-pill.on { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.5); }
 
 /* ── REC CARD — PRIMARY UI ── */
 .rec-card {
@@ -141,6 +141,7 @@ body {
   border-bottom: 1px solid var(--line);
   overflow: hidden;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .rec-card:active { background: var(--card2); }
 
@@ -159,21 +160,21 @@ body {
   font-size: 10px; font-weight: 800; letter-spacing: .4px;
   padding: 2px 8px; border-radius: 4px;
 }
-.badge-live   { background: rgba(255,59,59,.15); color: var(--live-red); }
-.badge-today  { background: rgba(0,212,170,.12); color: var(--accent); }
-.badge-tmrw   { background: rgba(74,168,255,.12); color: var(--blue); }
+.badge-live   { background: rgba(220,38,38,0.1); color: var(--live-red); }
+.badge-today  { background: rgba(0,112,243,0.08); color: var(--accent); }
+.badge-tmrw   { background: rgba(0,112,243,0.08); color: var(--blue); }
 .badge-done   { background: rgba(80,88,104,.15); color: var(--t4); }
 .rc-meta-txt  { font-size: 11px; color: var(--t3); font-weight: 500; }
 .rc-signal {
   font-size: 10px; font-weight: 800; letter-spacing: .3px;
   padding: 2px 7px; border-radius: 4px; margin-left: auto;
 }
-.sig-rlm   { background: rgba(243,156,18,.15); color: var(--yellow); }
-.sig-steam { background: rgba(231,76,60,.15);  color: var(--red); }
+.sig-rlm   { background: rgba(217,119,6,0.1); color: var(--yellow); }
+.sig-steam { background: rgba(220,38,38,0.1);  color: var(--red); }
 .sig-ev    { background: rgba(46,204,113,.15); color: var(--green); }
-.sig-fade  { background: rgba(155,89,182,.15); color: var(--purple); }
+.sig-fade  { background: rgba(124,58,237,0.1); color: var(--purple); }
 .sig-sharp { background: rgba(74,168,255,.15); color: var(--blue); }
-.sig-live  { background: rgba(255,59,59,.12);  color: var(--live-red); }
+.sig-live  { background: rgba(220,38,38,0.08);  color: var(--live-red); }
 
 /* MATCHUP — the most important section, needs to be crystal clear */
 .rc-matchup {
@@ -230,8 +231,8 @@ body {
   margin: 0 14px 12px;
   border-radius: 10px; overflow: hidden;
 }
-.rc-rec.strong { border: 1.5px solid var(--green);  background: rgba(46,204,113,.08); }
-.rc-rec.lean   { border: 1.5px solid var(--accent); background: rgba(0,212,170,.07); }
+.rc-rec.strong { border: 1.5px solid var(--green);  background: rgba(22,163,74,0.07); }
+.rc-rec.lean   { border: 1.5px solid var(--accent); background: rgba(0,112,243,0.05); }
 .rc-rec.live   { border: 1.5px solid var(--live-red); background: rgba(255,59,59,.07); }
 .rc-rec.none   { border: 1.5px solid var(--line2);  background: transparent; }
 
@@ -269,7 +270,7 @@ body {
   padding: 10px 8px; text-align: center; cursor: pointer;
 }
 .odds-strip-cell:active { background: rgba(255,255,255,.04); }
-.odds-strip-cell.best-odds { background: rgba(46,204,113,.1); }
+.odds-strip-cell.best-odds { background: rgba(22,163,74,0.08); }
 .odds-strip-cell.rec-odds-cell { background: rgba(0,212,170,.1); }
 .osc-label { font-size: 9px; font-weight: 700; color: var(--t4); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
 .osc-main  { font-size: 15px; font-weight: 700; color: var(--t1); font-variant-numeric: tabular-nums; line-height: 1; }
@@ -384,9 +385,9 @@ body {
   letter-spacing: .3px;
 }
 .out-btn:active { transform: scale(.95); }
-.out-btn.aw { background: rgba(46,204,113,.12); border-color: var(--green); color: var(--green); }
-.out-btn.al { background: rgba(231,76,60,.12);  border-color: var(--red);   color: var(--red); }
-.out-btn.ap { background: rgba(74,168,255,.12); border-color: var(--blue);  color: var(--blue); }
+.out-btn.aw { background: rgba(22,163,74,0.1); border-color: var(--green); color: var(--green); }
+.out-btn.al { background: rgba(220,38,38,0.08);  border-color: var(--red);   color: var(--red); }
+.out-btn.ap { background: rgba(0,112,243,0.08); border-color: var(--blue);  color: var(--blue); }
 .out-btn.an { background: var(--card2); color: var(--t3); }
 .clv-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
 .clv-input {
@@ -476,8 +477,8 @@ body {
     <button class="pill"               onclick="filterPicks('midwest',this)">Midwest</button>
   </div>
 
-  <div id="no-key-banner" style="display:none;margin:12px 16px;background:rgba(245,158,11,0.1);border:1.5px solid rgba(245,158,11,0.35);border-radius:10px;padding:14px 16px;">
-    <div style="font-size:13px;font-weight:700;color:#f39c12;margin-bottom:4px;">⚠️ Showing estimated lines — not live data</div>
+  <div id="no-key-banner" style="display:none;margin:12px 16px;background:rgba(217,119,6,0.08);border:1.5px solid rgba(217,119,6,0.3);border-radius:10px;padding:14px 16px;">
+    <div style="font-size:13px;font-weight:700;color:#d97706;margin-bottom:4px;">⚠️ Showing estimated lines — not live data</div>
     <div style="font-size:12px;color:#8892a0;line-height:1.5;">Get a free API key at <strong style="color:#d0d5de;">the-odds-api.com</strong> (500 requests/month), then paste it in <strong style="color:#d0d5de;">Settings → Live Odds API</strong>. Live lines update every 90 seconds once connected.</div>
     <button onclick="showPage('settings',document.getElementById('nav-settings'))" style="margin-top:10px;background:#f39c12;color:#000;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:800;cursor:pointer;width:100%;">Go to Settings →</button>
   </div>
@@ -550,7 +551,7 @@ body {
   <div class="settings-section">
     <div class="settings-title">Live Odds API</div>
     <div class="form-row"><label class="form-lbl">The-Odds-API Key</label><input class="form-input" type="text" id="s-apikey" placeholder="Free at the-odds-api.com"></div>
-    <div style="background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2);border-radius:8px;padding:12px;margin-bottom:12px;">
+    <div style="background:rgba(0,112,243,0.05);border:1px solid rgba(0,112,243,0.2);border-radius:8px;padding:12px;margin-bottom:12px;">
       <div style="font-size:12px;color:#00d4aa;font-weight:700;margin-bottom:6px;">How to get your free key:</div>
       <div style="font-size:12px;color:#8892a0;line-height:1.8;">
         1. Go to <strong style="color:#d0d5de;">the-odds-api.com</strong><br>
@@ -737,58 +738,46 @@ const fmtSp=n=>(n==null||isNaN(n))?'—':n>0?'+'+n:''+n;
 // Louisville 73-60 USF
 
 const FALLBACK=[
-  // ── FRI MAR 20 — R64 ─────────────────────────────────────────
-  // Lines verified from ESPN/DraftKings/BetMGM Fri Mar 20 2026
-  // Kentucky 89-84 OT vs Santa Clara — COMPLETED
-  {home:'Kentucky',       away:'Santa Clara',     hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'12:15 PM',tv:'CBS',  reg:'Midwest',st:'done', sp:-2.5,  opn:-2.5,  tot:157.5,ml:-155},
-  // Texas Tech def Akron — COMPLETED (TT shot 64%, blowout)
-  {home:'Texas Tech',     away:'Akron',           hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'12:40 PM',tv:'truTV',reg:'West',   st:'done', sp:-7.5,  opn:-7.5,  tot:154.5,ml:-300},
-  // Iowa State -34 vs Tennessee State (ESPN BPI: ISU by 32.8, 99.8% probability)
-  {home:'Iowa State',     away:'Tennessee State', hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'2:50 PM', tv:'CBS',  reg:'Midwest',st:'today',sp:-34.0, opn:-13.5, tot:147.5,ml:-100000},
-  {home:'Virginia',       away:'Wright State',    hs:3, as:14,rd:'R64',date:'Fri 3/20',time:'1:50 PM', tv:'TBS',  reg:'West',   st:'today',sp:-6.5,  opn:-6.0,  tot:138.5,ml:-240},
-  {home:'Arizona',        away:'Long Island',     hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'1:35 PM', tv:'TNT',  reg:'West',   st:'today',sp:-21.5, opn:-22.0, tot:144.5,ml:-100000},
-  {home:'Alabama',        away:'Hofstra',         hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'3:15 PM', tv:'truTV',reg:'South',  st:'today',sp:-9.5,  opn:-9.0,  tot:140.5,ml:-400},
-  {home:'Tennessee',      away:'Miami (OH)',      hs:6, as:11,rd:'R64',date:'Fri 3/20',time:'4:25 PM', tv:'TBS',  reg:'East',   st:'today',sp:-4.5,  opn:-4.5,  tot:143.0,ml:-180},
-  {home:'Villanova',      away:'Utah State',      hs:8, as:9, rd:'R64',date:'Fri 3/20',time:'4:10 PM', tv:'TNT',  reg:'West',   st:'today',sp:-1.5,  opn:-2.0,  tot:145.5,ml:-120},
-  {home:'Vanderbilt',     away:'Oral Roberts',    hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'6:05 PM', tv:'truTV',reg:'South',  st:'today',sp:-5.5,  opn:-5.0,  tot:141.0,ml:-215},
-  // Iowa -2.5 favored over Clemson (per ESPN: Iowa -130, Clemson +110)
-  {home:'Iowa',           away:'Clemson',         hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'6:50 PM', tv:'TNT',  reg:'South',  st:'today',sp:-2.5,  opn:-2.5,  tot:128.5,ml:-130},
-  {home:'UCLA',           away:'UCF',             hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'7:25 PM', tv:'TBS',  reg:'East',   st:'today',sp:-5.5,  opn:-5.5,  tot:152.5,ml:-245},
-  // Purdue -25.5 vs Queens (ESPN BPI: PUR by 23.8, 97.8%)
-  {home:'Purdue',         away:'Queens (NC)',     hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'7:35 PM', tv:'truTV',reg:'South',  st:'today',sp:-25.5, opn:-25.5, tot:162.5,ml:-8000},
-  // St. John's -9.5 vs Northern Iowa (ESPN: STJ -535, UNI +400)
-  {home:"St. John's",     away:'Northern Iowa',   hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'7:10 PM', tv:'CBS',  reg:'West',   st:'today',sp:-9.5,  opn:-9.5,  tot:131.5,ml:-535},
-  // Kansas -14.5 vs Cal Baptist (ESPN: KAN -1200, CBU +750)
-  {home:'Kansas',         away:'Cal Baptist',     hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'9:45 PM', tv:'CBS',  reg:'South',  st:'today',sp:-14.5, opn:-13.5, tot:138.5,ml:-1200},
-  {home:'Miami (FL)',     away:'Missouri',        hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'10:10 PM',tv:'truTV',reg:'West',   st:'today',sp:-2.5,  opn:-2.0,  tot:141.5,ml:-135},
-  {home:'UConn',          away:'Furman',          hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'10:00 PM',tv:'TBS',  reg:'East',   st:'today',sp:-16.5, opn:-20.5, tot:141.0,ml:-1300},
-  // Florida -35.5 vs Prairie View A&M (ESPN: FLA -100000, PVA +5000)
-  {home:'Florida',        away:'Prairie View A&M',hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'9:25 PM', tv:'TNT',  reg:'South',  st:'today',sp:-35.5, opn:-35.5, tot:155.5,ml:-100000},
-  // ── SAT MAR 21 — R32 — Verified lines from BetMGM/ESPN ──────────
-  // Michigan vs Saint Louis — total 159.5 (both teams scored 100+ on Thu)
-  {home:'Michigan',       away:'Saint Louis',     hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'12:10 PM',tv:'CBS',  reg:'East',   st:'tmrw', sp:-12.5, opn:-12.5, tot:159.5,ml:-750},
-  {home:'Michigan State', away:'Louisville',      hs:3, as:6, rd:'R32',date:'Sat 3/21',time:'2:45 PM', tv:'CBS',  reg:'East',   st:'tmrw', sp:-6.5,  opn:-6.0,  tot:141.0,ml:-250},
-  // Duke -11.5 vs TCU (Yahoo: "opened as double-digit favorite" post Siena scare)
-  {home:'Duke',           away:'TCU',             hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'5:15 PM', tv:'CBS',  reg:'East',   st:'tmrw', sp:-11.5, opn:-12.0, tot:143.5,ml:-600},
-  // Houston -8.5 vs Texas A&M (ESPN BPI: HOU by 9.2, 81%)
-  {home:'Houston',        away:'Texas A&M',       hs:2, as:10,rd:'R32',date:'Sat 3/21',time:'6:10 PM', tv:'TNT',  reg:'South',  st:'tmrw', sp:-8.5,  opn:-8.5,  tot:142.5,ml:-500},
-  // Gonzaga -6.5 vs Texas (ESPN BPI: GON by 6.8, 75%)
-  {home:'Gonzaga',        away:'Texas',           hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:10 PM', tv:'TBS',  reg:'West',   st:'tmrw', sp:-6.5,  opn:-5.5,  tot:147.5,ml:-230},
-  // Illinois -10.5 vs VCU (ESPN BPI: ILL by 9.6, 82%)
-  {home:'Illinois',       away:'VCU',             hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:50 PM', tv:'CBS',  reg:'Midwest',st:'tmrw', sp:-10.5, opn:-10.5, tot:151.5,ml:-550},
-  // Vanderbilt -2.5 vs Nebraska (ESPN: VAN -2.5 favored; Vandy won Thu, NEB is the 4-seed)
-  {home:'Vanderbilt',     away:'Nebraska',        hs:5, as:4, rd:'R32',date:'Sat 3/21',time:'8:45 PM', tv:'TNT',  reg:'South',  st:'tmrw', sp:-2.5,  opn:-2.5,  tot:140.5,ml:-140},
-  // Arkansas -11.5 vs High Point (Yahoo BetMGM: ARK -11.5, total 168.5)
-  {home:'Arkansas',       away:'High Point',      hs:4, as:12,rd:'R32',date:'Sat 3/21',time:'9:45 PM', tv:'TBS',  reg:'West',   st:'tmrw', sp:-11.5, opn:-11.5, tot:168.5,ml:-600},
+  // ── FRI MAR 20 R64 — COMPLETED ──────────────────────────────
+  // All final scores verified NCAA.com / ESPN / Yahoo Mar 20 2026
+  {home:'Kentucky',       away:'Santa Clara',     hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'CBS',  reg:'Midwest',st:'done', sp:-2.5,  opn:-2.5,  tot:157.5,ml:-155, fin:{h:89,a:84}},
+  {home:'Texas Tech',     away:'Akron',           hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'truTV',reg:'West',   st:'done', sp:-7.5,  opn:-7.5,  tot:156.5,ml:-300, fin:{h:91,a:71}},
+  {home:'Arizona',        away:'Long Island',     hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TNT',  reg:'West',   st:'done', sp:-30.5, opn:-30.5, tot:148.5,ml:-100000,fin:{h:92,a:58}},
+  {home:'Virginia',       away:'Wright State',    hs:3, as:14,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TBS',  reg:'West',   st:'done', sp:-17.5, opn:-17.5, tot:145.5,ml:-900, fin:{h:82,a:73}},
+  {home:'Iowa State',     away:'Tennessee State', hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'CBS',  reg:'Midwest',st:'done', sp:-24.5, opn:-24.5, tot:148.5,ml:-100000,fin:{h:108,a:74}},
+  {home:'Alabama',        away:'Hofstra',         hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'truTV',reg:'South',  st:'done', sp:-11.5, opn:-11.5, tot:157.5,ml:-700, fin:{h:90,a:70}},
+  {home:'Utah State',     away:'Villanova',       hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TNT',  reg:'West',   st:'done', sp:-1.5,  opn:-1.5,  tot:146.5,ml:-120, fin:{h:86,a:76}},
+  {home:'Tennessee',      away:'Miami (OH)',      hs:6, as:11,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TBS',  reg:'East',   st:'done', sp:-11.5, opn:-11.5, tot:148.5,ml:-600, fin:{h:78,a:56}},
+  // ── FRI MAR 20 R64 — LIVE / UPCOMING ────────────────────────
+  // Lines from Yahoo/CBS verified Mar 20 2026
+  {home:'Iowa',           away:'Clemson',         hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'~7PM',    tv:'TNT',  reg:'South',  st:'today',sp:-1.5,  opn:-1.5,  tot:128.5,ml:-120},
+  {home:"St. John's",     away:'Northern Iowa',   hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'~7PM',    tv:'CBS',  reg:'West',   st:'today',sp:-9.5,  opn:-9.5,  tot:131.5,ml:-535},
+  {home:'UCLA',           away:'UCF',             hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'~7PM',    tv:'TBS',  reg:'East',   st:'today',sp:-5.5,  opn:-5.5,  tot:151.5,ml:-245},
+  {home:'Purdue',         away:'Queens (NC)',     hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'~7:35PM', tv:'truTV',reg:'South',  st:'today',sp:-25.5, opn:-25.5, tot:159.5,ml:-8000},
+  {home:'Miami (FL)',     away:'Missouri',        hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'~10PM',   tv:'truTV',reg:'West',   st:'today',sp:-1.5,  opn:-1.5,  tot:145.5,ml:-130},
+  {home:'Florida',        away:'Prairie View A&M',hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'9:25PM',  tv:'TNT',  reg:'South',  st:'today',sp:-35.5, opn:-35.5, tot:154.5,ml:-100000},
+  {home:'Kansas',         away:'Cal Baptist',     hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'9:45PM',  tv:'CBS',  reg:'South',  st:'today',sp:-14.5, opn:-14.5, tot:141.5,ml:-1200},
+  {home:'UConn',          away:'Furman',          hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'10PM',    tv:'TBS',  reg:'East',   st:'today',sp:-20.5, opn:-20.5, tot:135.5,ml:-2500},
+  // ── SAT MAR 21 R32 — Lines verified ESPN/Yahoo/BetMGM ────────
+  {home:'Michigan',       away:'Saint Louis',     hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'12:10PM', tv:'CBS',  reg:'East',   st:'tmrw', sp:-12.5, opn:-12.5, tot:159.5,ml:-750},
+  {home:'Michigan State', away:'Louisville',      hs:3, as:6, rd:'R32',date:'Sat 3/21',time:'2:45PM',  tv:'CBS',  reg:'East',   st:'tmrw', sp:-6.5,  opn:-6.5,  tot:141.0,ml:-250},
+  {home:'Duke',           away:'TCU',             hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'5:15PM',  tv:'CBS',  reg:'East',   st:'tmrw', sp:-11.5, opn:-11.5, tot:143.5,ml:-600},
+  {home:'Houston',        away:'Texas A&M',       hs:2, as:10,rd:'R32',date:'Sat 3/21',time:'6:10PM',  tv:'TNT',  reg:'South',  st:'tmrw', sp:-8.5,  opn:-8.5,  tot:142.5,ml:-500},
+  {home:'Gonzaga',        away:'Texas',           hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:10PM',  tv:'TBS',  reg:'West',   st:'tmrw', sp:-6.5,  opn:-6.5,  tot:147.5,ml:-230},
+  {home:'Illinois',       away:'VCU',             hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:50PM',  tv:'CBS',  reg:'Midwest',st:'tmrw', sp:-10.5, opn:-10.5, tot:151.5,ml:-550},
+  {home:'Vanderbilt',     away:'Nebraska',        hs:5, as:4, rd:'R32',date:'Sat 3/21',time:'8:45PM',  tv:'TNT',  reg:'South',  st:'tmrw', sp:-2.5,  opn:-2.5,  tot:140.5,ml:-140},
+  {home:'Arkansas',       away:'High Point',      hs:4, as:12,rd:'R32',date:'Sat 3/21',time:'9:45PM',  tv:'TBS',  reg:'West',   st:'tmrw', sp:-11.5, opn:-11.5, tot:168.5,ml:-600},
 ];
 
 // Simulated live in-progress games
 const LIVE_GAMES=[
-  // Scores + live lines from theScore as shown in screenshots
-  {home:'Iowa State',  away:'Tennessee State',score:{h:82,a:47},period:'2nd Half',clock:'12:17',liveSpread:-38.5,liveML:-100000},
-  {home:'Alabama',     away:'Hofstra',        score:{h:52,a:41},period:'2nd Half',clock:'15:28',liveSpread:-14.5,liveML:-4000},
-  {home:'Villanova',   away:'Utah State',     score:{h:27,a:31},period:'1st Half',clock:'7:57', liveSpread:3.5,  liveML:155},
-  {home:'Virginia',    away:'Wright State',   score:{h:22,a:22},period:'1st Half',clock:'8:15', liveSpread:-3.5, liveML:-175},
+  // Active live games as of Fri Mar 20 ~7:30PM ET
+  // Scores/lines from theScore/CBS live tracker
+  {home:'Iowa',         away:'Clemson',       score:{h:35,a:31},period:'2nd Half',clock:'15:22',liveSpread:-1.5,liveML:-130},
+  {home:"St. John's",   away:'Northern Iowa', score:{h:42,a:14},period:'1st Half', clock:'5:10', liveSpread:-18.0,liveML:-2000},
+  {home:'UCLA',         away:'UCF',           score:{h:38,a:24},period:'1st Half', clock:'4:30', liveSpread:-9.5,liveML:-500},
+  {home:'Purdue',       away:'Queens (NC)',   score:{h:51,a:28},period:'2nd Half',clock:'12:00',liveSpread:-31.0,liveML:-10000},
+  {home:'Miami (FL)',   away:'Missouri',      score:{h:12,a:10},period:'1st Half', clock:'14:00',liveSpread:-1.5,liveML:-135},
 ];
 
 const T26=new Set([
@@ -1040,7 +1029,7 @@ function renderCard(g){
   if(g.isLive) badge=`<span class="rc-badge badge-live">🔴 LIVE ${g.livePeriod} ${g.liveClock}</span>`;
   else if(g.status==='today') badge=`<span class="rc-badge badge-today">TODAY</span>`;
   else if(g.status==='tmrw')  badge=`<span class="rc-badge badge-tmrw">SAT 3/21</span>`;
-  else if(g.status==='done')  badge=`<span class="rc-badge badge-done">FINAL</span>`;
+  else if(g.status==='done')  badge=`<span class="rc-badge badge-done">FINAL ${g.fin?g.fin.a+' – '+g.fin.h:''}</span>`;
 
   // Signal chips (max 2 to avoid clutter)
   const sigHtml=rec.signals.slice(0,2).map(s=>{
