@@ -396,87 +396,7 @@ body {
 
 <!-- ══ PAGE: TOOLS ══ -->
 <div id="page-tools" class="page">
-  <div class="tool-card">
-    <div class="tool-title">No-Vig Calculator</div>
-    <div class="tool-desc">Strip the book's margin to find the true fair line and implied probability for each side.</div>
-    <div class="form-2col">
-      <div class="form-row"><label class="form-lbl">Team A Odds</label><input class="form-input" type="number" id="vig-a" placeholder="-150" oninput="calcNoVig()"></div>
-      <div class="form-row"><label class="form-lbl">Team B Odds</label><input class="form-input" type="number" id="vig-b" placeholder="+130" oninput="calcNoVig()"></div>
-    </div>
-    <div id="vig-result" class="tool-result" style="display:none;"></div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-title">Kelly Criterion Sizer</div>
-    <div class="tool-desc">Given your estimated win probability and the offered odds, calculates the optimal stake using your configured Kelly fraction.</div>
-    <div class="form-2col">
-      <div class="form-row"><label class="form-lbl">Win Prob %</label><input class="form-input" type="number" id="kelly-prob" placeholder="54" step=".1" oninput="calcKelly()"></div>
-      <div class="form-row"><label class="form-lbl">American Odds</label><input class="form-input" type="number" id="kelly-odds" placeholder="-110" oninput="calcKelly()"></div>
-    </div>
-    <div id="kelly-result" class="tool-result" style="display:none;"></div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-title">Live +EV Spots</div>
-    <div id="ev-list"><div class="loading"><div class="spinner"></div></div></div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-title">Historical Stats — Today's Games</div>
-    <div class="tool-desc">Notable ATS trends, tournament records, and hot/cold streaks for every active game. 🔥 = covering at 58%+ rate. ❄️ = covering at 42% or less.</div>
-    <div id="stats-insights"><div style="font-size:13px;color:var(--t4);">Loading stats...</div></div>
-  </div>
-</div>
-
-
-<!-- ══ PAGE: MY BETS ══ -->
-<div id="page-tracker" class="page">
-  <div class="tracker-strip">
-    <div class="ts-cell"><div class="ts-val c-accent" id="tr-bets">0</div><div class="ts-lbl">Bets</div></div>
-    <div class="ts-cell"><div class="ts-val" id="tr-pnl">$0</div><div class="ts-lbl">P/L</div></div>
-    <div class="ts-cell"><div class="ts-val" id="tr-wr">—</div><div class="ts-lbl">Win %</div></div>
-    <div class="ts-cell"><div class="ts-val" id="tr-roi">0%</div><div class="ts-lbl">ROI</div></div>
-  </div>
-
-  <button class="tracker-add-btn" onclick="openAddBetModal()">+ Log a Bet</button>
-
-  <div class="tracker-section">
-    <div class="tracker-section-title">P/L History</div>
-    <div id="pl-spark"><div style="font-size:13px;color:var(--t4);">Log bets to track P/L</div></div>
-  </div>
-
-  <div class="tracker-section">
-    <div class="tracker-section-title">Closing Line Value</div>
-    <div id="clv-panel"><div style="font-size:13px;color:var(--t4);">Enter closing odds per bet to track CLV</div></div>
-  </div>
-
-  <div class="tracker-section">
-    <div class="tracker-section-title">By Bet Type</div>
-    <div id="perf-type"></div>
-  </div>
-  <div class="tracker-section">
-    <div class="tracker-section-title">By Sportsbook</div>
-    <div id="perf-book"></div>
-  </div>
-
-  <div id="bet-log"></div>
-</div>
-
-<!-- ══ PAGE: SETTINGS ══ -->
-<div id="page-settings" class="page">
-  <div class="settings-section">
-    <div class="settings-title">Live Odds API</div>
-    <div class="form-row"><label class="form-lbl">The-Odds-API Key</label><input class="form-input" type="text" id="s-apikey" placeholder="Free at the-odds-api.com"></div>
-    <div style="background:rgba(0,112,243,0.05);border:1px solid rgba(0,112,243,0.2);border-radius:8px;padding:12px;margin-bottom:12px;">
-      <div style="font-size:12px;color:#00d4aa;font-weight:700;margin-bottom:6px;">How to get your free key:</div>
-      <div style="font-size:12px;color:#8892a0;line-height:1.8;">
-        1. Go to <strong style="color:#d0d5de;">the-odds-api.com</strong><br>
-        2. Click <strong style="color:#d0d5de;">Get API Key</strong> → sign up free<br>
-        3. Copy your key from the dashboard<br>
-        4. Paste it above → tap <strong style="color:#d0d5de;">Save Key</strong>
-      </div>
-      <div style="font-size:11px;color:#505868;margin-top:6px;">500 free requests/month · auto-refreshes every 90s · includes live in-play lines</div>
-    </div>
+  
     <div class="form-2col" style="margin-bottom:12px;">
       <button class="btn-ghost" onclick="testApiKey()">Test</button>
       <button class="btn-primary" onclick="saveApiKey()">Save Key</button>
@@ -625,10 +545,10 @@ body {
 // ════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════
-const SK = 'edge_v9';
+const SK = 'edge_v10';
 let state = {
   bankroll:1000, unit:25, bets:[], games:[],
-  apiKey:'1b8e7af59dfb8b569038821160756c9d', defaultBook:'theScore Bet',
+  defaultBook:'theScore Bet',
   kellyFraction:.5,
   weights:{rlm:25,steam:20,diverge:20,ev:20,model:15},
   filter: 'all',
@@ -643,47 +563,6 @@ function saveState(){ try{localStorage.setItem(SK,JSON.stringify(state));}catch(
 
 
 // ── LINE MOVEMENT ANALYSIS ──
-function analyzeLineMove(game){
-  const move = parseFloat((game.curSpread - game.openSpread).toFixed(1));
-  const absMv = Math.abs(move);
-  if(absMv < 0.5) return null; // noise, ignore
-
-  const favMoved = move < 0; // spread went more negative = favorite got more chalk
-  const result = { move, absMv, favMoved };
-
-  if(absMv >= 3){
-    result.strength = 'major';
-    result.color = '#dc2626';
-    result.icon = '🚨';
-  } else if(absMv >= 2){
-    result.strength = 'significant';
-    result.color = '#d97706';
-    result.icon = '⚡';
-  } else {
-    result.strength = 'minor';
-    result.color = '#6b7280';
-    result.icon = '↕';
-  }
-
-  // Interpret direction
-  if(favMoved){
-    // Line moved toward favorite — public loading chalk OR sharp fade of dog
-    result.interpretation = absMv >= 2
-      ? `Line moved ${absMv}pts toward ${game.home} — heavy public action on favorite. Consider fading.`
-      : `${absMv}pt drift toward ${game.home} — monitor for further movement.`;
-    result.signal = 'FADE FAV';
-    result.signalColor = '#7c3aed';
-  } else {
-    // Line moved toward underdog — sharp money on dog
-    result.interpretation = absMv >= 2
-      ? `Line moved ${absMv}pts toward ${game.away} — sharp money on the underdog. Strong buy signal.`
-      : `${absMv}pt move toward ${game.away} — early sharp positioning on underdog.`;
-    result.signal = 'SHARP DOG';
-    result.signalColor = '#16a34a';
-  }
-
-  return result;
-}
 
 
 // ════════════════════════════════════════
@@ -867,16 +746,6 @@ const FALLBACK=[
   {home:'Arkansas',       away:'High Point',      hs:4, as:12,rd:'R32',date:'Sat 3/21',time:'9:45PM',  tv:'TBS',  reg:'West',   st:'upcoming', sp:-11.5, opn:-11.5, tot:168.5,ml:-600},
 ];
 
-const T26=new Set([
-  'Iowa State','Tennessee State','Virginia','Wright State','Arizona','Long Island',
-  'Alabama','Hofstra','Tennessee','Miami (OH)','Villanova','Utah State',
-  'Vanderbilt','Oral Roberts','Clemson','Iowa','UCLA','UCF',
-  'Purdue','Queens (NC)','Kansas','Cal Baptist','Miami (FL)','Missouri',
-  'UConn','Furman','Florida','Prairie View A&M',"St. John's",'Northern Iowa',
-  'Michigan','Saint Louis','Michigan State','Louisville','Duke','TCU',
-  'Houston','Texas A&M','Gonzaga','Texas','Illinois','VCU',
-  'Nebraska','High Point','Arkansas','Kentucky','Santa Clara','Texas Tech','Akron',
-]);
 
 // ════════════════════════════════════════
 // FEATURE 2: ATS DATA — 2025-26 season + tournament history
@@ -907,87 +776,14 @@ function atsPct(arr){
 // Works when file is opened in Safari/Chrome on your phone.
 // Falls back to hardcoded lines gracefully.
 // ════════════════════════════════════════
-async function fetchLiveOdds(){
-  if(!state.apiKey) return buildAll(FALLBACK);
-  try{
-    const url = `https://api.the-odds-api.com/v4/sports/basketball_ncaab/odds/` +
-      `?apiKey=${state.apiKey}` +
-      `&regions=us` +
-      `&markets=h2h,spreads,totals` +
-      `&oddsFormat=american` +
-      `&bookmakers=draftkings,fanduel,betmgm`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const raw = await res.json();
-    // Filter to NCAA Tournament teams only (excludes NIT, women's, etc.)
-    const games = raw.filter(g =>
-      !/(nit|cbi|wnba|women)/i.test((g.home_team||'')+(g.away_team||'')) &&
-      (T26.has(g.home_team) || T26.has(g.away_team))
-    );
-    if(games.length > 0){
-      setLiveLabel();
-      showApiOk(res.headers.get('x-requests-remaining'));
-      return mergeLive(games);
-    }
-    // API returned no matching games — fall back
-    return buildAll(FALLBACK);
-  }catch(e){
-    console.warn('Live odds fetch failed:', e.message);
-    showApiError(e.message);
-    return buildAll(FALLBACK);
-  }
-}
-
-function setLiveLabel(){
-  const el = document.getElementById('live-lbl');
-  if(el){ el.textContent = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
-}
-
-function showApiOk(remaining){
-  const el = document.getElementById('api-status');
-  if(el){ el.textContent = `✓ Live data loaded · ${remaining||'?'} requests remaining`; el.style.color='var(--green)'; }
-  const banner = document.getElementById('no-key-banner');
-  if(banner) banner.style.display='none';
-}
-
-function showApiError(msg){
-  const el = document.getElementById('api-status');
-  if(el){ el.textContent = `⚠ Using fallback lines (${msg})`; el.style.color='var(--yellow)'; }
+function fetchLiveOdds(){
+  return buildAll(FALLBACK);
 }
 
 
-function mergeLive(apiGames){
-  return FALLBACK.map(fb=>{
-    const m = apiGames.find(g =>
-      g.home_team===fb.home || g.away_team===fb.away ||
-      g.home_team===fb.away || g.away_team===fb.home
-    );
-    if(!m) return buildGame(fb, null);
-    const books = {};
-    (m.bookmakers||[]).forEach(bm=>{
-      const ml  = bm.markets.find(x=>x.key==='h2h');
-      const sp  = bm.markets.find(x=>x.key==='spreads');
-      const tot = bm.markets.find(x=>x.key==='totals');
-      books[bm.key] = {
-        homeML:         ml?.outcomes.find(o=>o.name===m.home_team)?.price,
-        awayML:         ml?.outcomes.find(o=>o.name===m.away_team)?.price,
-        homeSpread:     sp?.outcomes.find(o=>o.name===m.home_team)?.point,
-        homeSpreadOdds: sp?.outcomes.find(o=>o.name===m.home_team)?.price,
-        awaySpreadOdds: sp?.outcomes.find(o=>o.name===m.away_team)?.price,
-        total:          tot?.outcomes.find(o=>o.name==='Over')?.point,
-        overOdds:       tot?.outcomes.find(o=>o.name==='Over')?.price,
-        underOdds:      tot?.outcomes.find(o=>o.name==='Under')?.price,
-      };
-    });
-    const dk = books.draftkings || {};
-    return buildGame(fb, {
-      sp:    dk.homeSpread  ?? fb.sp,
-      tot:   dk.total       ?? fb.tot,
-      ml:    dk.homeML      ?? fb.ml,
-      books,
-    });
-  });
-}
+
+
+
 
 
 function buildAll(list){return list.map(fb=>buildGame(fb,null));}
@@ -1273,8 +1069,6 @@ function edgeClr(s){return s>=65?'var(--green)':s>=40?'var(--accent)':'var(--t4)
 function renderPicks(){
   updateKPIs();
   // Show/hide no-key banner
-  const banner = document.getElementById('no-key-banner');
-  if (banner) banner.style.display = state.apiKey ? 'none' : 'block';
   const f=state.filter;
   let games=[...state.games];
 
@@ -1675,37 +1469,6 @@ document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click
 // ════════════════════════════════════════
 // SETTINGS
 // ════════════════════════════════════════
-function loadSettingsUI(){
-  if(state.apiKey)document.getElementById('s-apikey').value=state.apiKey;
-  document.getElementById('s-book').value=state.defaultBook||'theScore Bet';
-  document.getElementById('s-unit').value=state.unit;
-  document.getElementById('s-bankroll').value=state.bankroll;
-  document.getElementById('s-kelly').value=state.kellyFraction||.5;
-  const w=state.weights||{};
-  ['rlm','steam','diverge','ev','model'].forEach(k=>{const el=document.getElementById('w-'+k);if(el&&w[k])el.value=w[k];});
-}
-function saveApiKey(){
-  const k=document.getElementById('s-apikey').value.trim();
-  if(!k){setStatus('Enter a key first','var(--red)');return;}
-  state.apiKey=k;saveState();setStatus('✓ Saved — refreshing…','var(--green)');setTimeout(refreshAll,400);
-}
-async function testApiKey(){
-  const k = (document.getElementById('s-apikey').value||'').trim() || state.apiKey;
-  if(!k){ setStatus('Enter a key first','var(--red)'); return; }
-  setStatus('Testing…','var(--t3)');
-  try{
-    const res = await fetch(`https://api.the-odds-api.com/v4/sports/?apiKey=${k}`);
-    const rem = res.headers.get('x-requests-remaining') || '?';
-    if(res.ok){
-      setStatus(`✓ Connected · ${rem} requests remaining`,'var(--green)');
-    } else {
-      const err = await res.json().catch(()=>({}));
-      setStatus(`✕ ${err.message||'Invalid key'}`,'var(--red)');
-    }
-  }catch(e){
-    setStatus(`✕ Network error — open in Safari/Chrome (not Claude)`,'var(--red)');
-  }
-}
 function setStatus(msg,col){const el=document.getElementById('api-status');el.textContent=msg;el.style.color=col;}
 function saveSettings(){
   const bk=document.getElementById('s-book').value;
@@ -1952,6 +1715,13 @@ function renderStats(){
 // ════════════════════════════════════════
 // NAV
 // ════════════════════════════════════════
+function loadSettingsUI(){
+  try {
+    const u=document.getElementById('s-unit'); if(u) u.value=state.unit||25;
+    const b=document.getElementById('s-bank'); if(b) b.value=state.bankroll||1000;
+  } catch(e){}
+}
+
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
@@ -1967,25 +1737,17 @@ function showPage(id,btn){
 // ════════════════════════════════════════
 // REFRESH
 // ════════════════════════════════════════
-async function refreshAll(force){
-  const lbl = document.getElementById('live-lbl');
-  if(lbl) lbl.textContent = '…';
-
-  // Only rebuild game data if we have an API key (real data) OR force=true
-  // Without an API key, fallback data is stable — no need to re-roll
-  if(state.apiKey || force || !state.games.length){
-    state.games = await fetchLiveOdds();
-    saveState();
-  }
-
-  renderPicks(); renderBestBet(); updateKPIs();
-  if(document.getElementById('page-today').classList.contains('active')) renderToday();
-  if(document.getElementById('page-dogs').classList.contains('active'))  renderDogs();
-  if(document.getElementById('page-tools').classList.contains('active')) renderEVList();
-  if(lbl){
-    const t = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    lbl.textContent = t;
-  }
+function refreshAll(){
+  state.games = buildAll(FALLBACK);
+  renderPicks();
+  renderBestBet();
+  updateKPIs();
+  const tp = document.getElementById('page-today');
+  const dp = document.getElementById('page-dogs');
+  const tlp = document.getElementById('page-tools');
+  if(tp && tp.classList.contains('active')) renderToday();
+  if(dp && dp.classList.contains('active')) renderDogs();
+  if(tlp && tlp.classList.contains('active')){ renderEVList(); renderStats(); }
 }
 setInterval(refreshAll,300000); // 5 min — pre-game lines stable
 
@@ -2026,9 +1788,9 @@ function renderBestBet(){
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
-async function init(){
+function init(){
   loadState();
-  state.games = await fetchLiveOdds();
+  state.games = buildAll(FALLBACK);
   renderPicks();
   renderBestBet();
   updateKPIs();
