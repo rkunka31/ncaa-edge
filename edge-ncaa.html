@@ -1052,48 +1052,110 @@ function mergeLive(apiGames){
 
 function buildAll(list){return list.map(fb=>buildGame(fb,null));}
 
-function buildGame(fb,live){
-  const sp=live?.sp??fb.sp;
-  const mv=parseFloat(((Math.random()-.5)*.4).toFixed(1));
-  const curSp=parseFloat((sp+mv).toFixed(1));
-  const curTot=live?.tot??fb.tot;
-  const baseML=live?.ml??fb.ml;
-  const homeML=baseML+Math.round((Math.random()-.5)*8);
-  const awayML=baseML<0?Math.round(Math.abs(baseML)*.92):-Math.round(baseML*1.08);
-  const bks=live?.books||{};
-  const mk=(ml_adj,sp_adj,j_sp,j_ov)=>({
-    homeSpread:parseFloat((curSp+sp_adj).toFixed(1)),
-    homeSpreadOdds:j_sp,awaySpreadOdds:j_sp===-110?-110:(j_sp>-110?-112:-108),
-    homeML:homeML+ml_adj,awayML:awayML+Math.round(ml_adj*-.5),
-    total:curTot,overOdds:j_ov,underOdds:j_ov===-110?-110:(j_ov>-110?-112:-108),
+// ── Deterministic hash ──
+// Returns a stable float [0,1) seeded from a string + salt.
+// Same game + same day = same value. Changes daily. Never random.
+function seedHash(str, salt){
+  let h = 0;
+  const s = str + '|' + salt + '|' + new Date().toISOString().slice(0,10);
+  for(let i=0; i<s.length; i++){
+    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  }
+  return (h >>> 0) / 4294967296;
+}
+function seededPick(arr, seed){ return arr[Math.floor(seed * arr.length)]; }
+function seededRange(min, max, seed){ return min + Math.floor(seed * (max - min + 1)); }
+function seededFloat(min, max, seed){ return parseFloat((min + seed * (max - min)).toFixed(1)); }
+
+function buildGame(fb, live){
+  const id = (fb.home + fb.away).replace(/\W/g,'');
+
+  // ── Deterministic seeds from game ID + date ──
+  // Different salt per variable ensures independence
+  const s = (salt) => seedHash(id, salt);
+
+  const sp = live?.sp ?? fb.sp;
+  // Spread noise: ±0.3pts max, stable all day
+  const mv = seededFloat(-0.3, 0.3, s('mv'));
+  const curSp = parseFloat((sp + mv).toFixed(1));
+  const curTot = live?.tot ?? fb.tot;
+  const baseML = live?.ml ?? fb.ml;
+  const homeML = baseML + seededRange(-3, 3, s('hml'));
+  const awayML = baseML < 0
+    ? Math.round(Math.abs(baseML) * 0.92)
+    : -Math.round(baseML * 1.08);
+
+  const bks = live?.books || {};
+  const mk = (ml_adj, sp_adj, j_sp, j_ov) => ({
+    homeSpread:     parseFloat((curSp + sp_adj).toFixed(1)),
+    homeSpreadOdds: j_sp,
+    awaySpreadOdds: j_sp === -110 ? -110 : (j_sp > -110 ? -112 : -108),
+    homeML:  homeML + ml_adj,
+    awayML:  awayML + Math.round(ml_adj * -.5),
+    total:   curTot,
+    overOdds:  j_ov,
+    underOdds: j_ov === -110 ? -110 : (j_ov > -110 ? -112 : -108),
   });
-  const ts =bks.draftkings||mk(0,0,-110,-110);
-  const dk =bks.draftkings||mk(ri(-5,5),0,-110,-110);
-  const fd =bks.fanduel   ||mk(ri(-5,5),Math.random()>.5?.5:0,[-115,-110,-105][ri(0,2)],[-115,-110,-105][ri(0,2)]);
-  const mgm=bks.betmgm    ||mk(ri(-8,8),Math.random()>.5?-.5:0,[-112,-108,-110][ri(0,2)],[-112,-108,-110][ri(0,2)]);
-  const pubBet=ri(28,76),pubMon=Math.min(92,Math.max(8,pubBet+ri(-32,32)));
-  const rlm=(pubBet>58&&mv>0.2)||(pubBet<42&&mv<-0.2);
-  const steam=Math.abs(mv)>=0.4&&Math.random()>.65;
-  const imp=a2i(homeML);
-  const mod=Math.min(.95,Math.max(.05,imp+(Math.random()-.5)*.1));
-  const ev=parseFloat(((mod-imp)*100).toFixed(1));
-  const w=state.weights,wt=w.rlm+w.steam+w.diverge+w.ev+w.model,n=100/wt;
-  const edgeScore=Math.min(100,Math.round(
-    (rlm?w.rlm*n:0)+(steam?w.steam*n:0)+
-    Math.min(w.diverge*n,Math.abs(pubBet-pubMon)*(w.diverge*n/30))+
-    (ev>3?w.ev*n:ev>1?w.ev*n*.5:0)+(Math.abs(mod-imp)>.05?w.model*n:0)+ri(0,14)
+
+  // Book lines — small stable differences between books
+  const ts  = bks.draftkings || mk(0, 0, -110, -110);
+  const dk  = bks.draftkings || mk(seededRange(-4,4,s('dk')),  0,    -110, -110);
+  const fd  = bks.fanduel    || mk(seededRange(-4,4,s('fd')),  seededPick([0,.5],s('fdsp')), seededPick([-115,-110,-105],s('fdj')), seededPick([-115,-110,-105],s('fdov')));
+  const mgm = bks.betmgm     || mk(seededRange(-6,6,s('mgm')), seededPick([-.5,0],s('mgmsp')), seededPick([-112,-108,-110],s('mgmj')), seededPick([-112,-108,-110],s('mgmov')));
+
+  // ── Betting signals — deterministic, stable all day ──
+  // Public betting % derived from seed + spread size (larger favs get more public)
+  const spreadBias = Math.min(30, Math.abs(sp) * 1.5); // big favs get more public action
+  const pubBetBase = sp < 0 ? 50 + spreadBias : 50 - spreadBias;
+  const pubBet = Math.min(82, Math.max(18, Math.round(pubBetBase + seededFloat(-12, 12, s('pub')))));
+
+  // Money % — diverges from bet% to create sharp signals
+  const moneyShift = seededFloat(-25, 25, s('mon'));
+  const pubMon = Math.min(90, Math.max(10, Math.round(pubBet + moneyShift)));
+
+  // RLM: only fires if public is heavily one-sided AND line moved the other way
+  // Use seeded mv — but cap at ±0.3 so RLM is rare and meaningful
+  const rlm = (pubBet > 62 && mv < -0.2) || (pubBet < 38 && mv > 0.2);
+
+  // Steam: only fires if abs(mv) is at its maximum for this game (>=0.25)
+  const steam = Math.abs(mv) >= 0.25 && s('steam') > 0.7;
+
+  // Model EV: derived from spread + seeded adjustment, not pure random
+  const imp = a2i(homeML);
+  const modAdj = seededFloat(-0.06, 0.06, s('mod'));
+  const mod = Math.min(.95, Math.max(.05, imp + modAdj));
+  const ev = parseFloat(((mod - imp) * 100).toFixed(1));
+
+  // Edge score: deterministic
+  const w = state.weights;
+  const wt = w.rlm + w.steam + w.diverge + w.ev + w.model;
+  const n = 100 / wt;
+  const edgeNoise = seededRange(0, 8, s('noise')); // small stable noise, not 0-14
+  const edgeScore = Math.min(100, Math.round(
+    (rlm   ? w.rlm   * n : 0) +
+    (steam ? w.steam * n : 0) +
+    Math.min(w.diverge * n, Math.abs(pubBet - pubMon) * (w.diverge * n / 30)) +
+    (ev > 3 ? w.ev * n : ev > 1 ? w.ev * n * .5 : 0) +
+    (Math.abs(mod - imp) > .05 ? w.model * n : 0) +
+    edgeNoise
   ));
-  return{
-    id:(fb.home+fb.away).replace(/\W/g,''),
-    home:fb.home,away:fb.away,homeSeed:fb.hs||'?',awaySeed:fb.as||'?',
-    round:fb.rd,date:fb.date,time:fb.time,tv:fb.tv,region:fb.reg,status:fb.st,
-    books:{thescore:ts,draftkings:dk,fanduel:fd,betmgm:mgm},
-    curSpread:curSp,openSpread:fb.opn,spreadMove:mv,curTotal:curTot,homeML,awayML,
-    pubBet,pubMon,rlm,steam,
-    modelProb:parseFloat(mod.toFixed(3)),impliedProb:parseFloat(imp.toFixed(3)),
-    ev,edgeScore,fin:fb.fin||null,
+
+  return {
+    id,
+    home: fb.home, away: fb.away,
+    homeSeed: fb.hs||'?', awaySeed: fb.as||'?',
+    round: fb.rd, date: fb.date, time: fb.time, tv: fb.tv,
+    region: fb.reg, status: fb.st,
+    books: {thescore:ts, draftkings:dk, fanduel:fd, betmgm:mgm},
+    curSpread: curSp, openSpread: fb.opn, spreadMove: mv,
+    curTotal: curTot, homeML, awayML,
+    pubBet, pubMon, rlm, steam,
+    modelProb: parseFloat(mod.toFixed(3)),
+    impliedProb: parseFloat(imp.toFixed(3)),
+    ev, edgeScore, fin: fb.fin || null,
   };
 }
+
 
 
 // ════════════════════════════════════════
@@ -1967,16 +2029,25 @@ function showPage(id,btn){
 // ════════════════════════════════════════
 // REFRESH
 // ════════════════════════════════════════
-async function refreshAll(){
-  const lbl=document.getElementById('live-lbl');
-  if(lbl)lbl.textContent='…';
-  state.games=await fetchLiveOdds();
-  saveState();
-  renderPicks();renderBestBet();updateKPIs();
-  if(document.getElementById('page-tools').classList.contains('active'))renderEVList();
-  if(lbl){const t=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});lbl.textContent=t;}
+async function refreshAll(force){
+  const lbl = document.getElementById('live-lbl');
+  if(lbl) lbl.textContent = '…';
+
+  // Only rebuild game data if we have an API key (real data) OR force=true
+  // Without an API key, fallback data is stable — no need to re-roll
+  if(state.apiKey || force || !state.games.length){
+    state.games = await fetchLiveOdds();
+    saveState();
+  }
+
+  renderPicks(); renderBestBet(); updateKPIs();
+  if(document.getElementById('page-tools').classList.contains('active')) renderEVList();
+  if(lbl){
+    const t = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    lbl.textContent = t;
+  }
 }
-setInterval(refreshAll,90000);
+setInterval(refreshAll,300000); // 5 min — pre-game lines stable
 
 // ════════════════════════════════════════
 // FEATURE 5: BEST BET WIDGET
