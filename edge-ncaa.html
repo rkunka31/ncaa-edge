@@ -370,17 +370,16 @@ body {
 
   <!-- Filter pills -->
   <div class="filters" id="picks-filters">
-    <button class="pill on"            onclick="filterPicks('upcoming',this)">Upcoming</button>
-    <button class="pill"               onclick="filterPicks('in-progress',this)">🔴 In Progress</button>
-    <button class="pill"               onclick="filterPicks('results',this)">Results</button>
-    <button class="pill"               onclick="filterPicks('strong',this)">🔥 Strong Bets</button>
-    <button class="pill"               onclick="filterPicks('sharp',this)">Sharp Money</button>
-    <button class="pill"               onclick="filterPicks('ev',this)">+EV</button>
-    <button class="pill"               onclick="filterPicks('south',this)">South</button>
-    <button class="pill"               onclick="filterPicks('east',this)">East</button>
-    <button class="pill"               onclick="filterPicks('west',this)">West</button>
-    <button class="pill"               onclick="filterPicks('midwest',this)">Midwest</button>
-    <button class="pill"               onclick="filterPicks('all',this)">All</button>
+    <button class="pill on"  onclick="filterPicks('all',this)">All</button>
+    <button class="pill"     onclick="filterPicks('strong',this)">🔥 Strong</button>
+    <button class="pill"     onclick="filterPicks('lean',this)">✅ Lean</button>
+    <button class="pill"     onclick="filterPicks('sharp',this)">Sharp</button>
+    <button class="pill"     onclick="filterPicks('ev',this)">+EV</button>
+    <button class="pill"     onclick="filterPicks('results',this)">Results</button>
+    <button class="pill"     onclick="filterPicks('south',this)">South</button>
+    <button class="pill"     onclick="filterPicks('east',this)">East</button>
+    <button class="pill"     onclick="filterPicks('west',this)">West</button>
+    <button class="pill"     onclick="filterPicks('midwest',this)">Midwest</button>
   </div>
 
   <div id="no-key-banner" style="display:none;margin:12px 16px;background:rgba(217,119,6,0.08);border:1.5px solid rgba(217,119,6,0.3);border-radius:10px;padding:14px 16px;">
@@ -626,14 +625,13 @@ body {
 // ════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════
-const SK = 'edge_v7';
+const SK = 'edge_v9';
 let state = {
   bankroll:1000, unit:25, bets:[], games:[],
   apiKey:'1b8e7af59dfb8b569038821160756c9d', defaultBook:'theScore Bet',
   kellyFraction:.5,
   weights:{rlm:25,steam:20,diverge:20,ev:20,model:15},
   filter: 'all',
-  hasLiveData: false,
 };
 function loadState(){ try{const s=localStorage.getItem(SK);if(s)state={...state,...JSON.parse(s)};}catch(e){} }
 function saveState(){ try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){} }
@@ -724,22 +722,10 @@ function parseGameTime(timeStr, dateStr){
 // Returns true if game start is within the window:
 // Started up to 3 hours ago OR starts any time in the future
 function isInWindow(game){
-  if(game.status==='done') return false;
-  // Only apply time window when we have confirmed live API data
-  if(!state.hasLiveData) return true;
-  const gameTime = parseGameTime(game.time, game.date);
-  if(!gameTime) return true;
-  const now = new Date();
-  const threeHrsAgo = new Date(now.getTime() - 3*60*60*1000);
-  return gameTime >= threeHrsAgo;
+  return game.status !== 'done';
 }
 
 // Returns true if game has likely started (game time is in the past)
-function hasStarted(game){
-  const gameTime = parseGameTime(game.time, game.date);
-  if(!gameTime) return false;
-  return gameTime <= new Date();
-}
 
 
 
@@ -862,26 +848,25 @@ const FALLBACK=[
   {home:'Tennessee',      away:'Miami (OH)',      hs:6, as:11,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TBS',  reg:'East',   st:'done', sp:-11.5, opn:-11.5, tot:148.5,ml:-600, fin:{h:78,a:56}},
   // ── FRI MAR 20 R64 — LIVE / UPCOMING ────────────────────────
   // Lines from Yahoo/CBS verified Mar 20 2026
-  {home:'Iowa',           away:'Clemson',         hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'6:50PM',  tv:'TNT',  reg:'South',  st:'today',sp:-1.5,  opn:-1.5,  tot:128.5,ml:-120},
-  {home:"St. John's",     away:'Northern Iowa',   hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'7:10PM',  tv:'CBS',  reg:'West',   st:'today',sp:-9.5,  opn:-9.5,  tot:131.5,ml:-535},
-  {home:'UCLA',           away:'UCF',             hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'7:25PM',  tv:'TBS',  reg:'East',   st:'today',sp:-5.5,  opn:-5.5,  tot:151.5,ml:-245},
-  {home:'Purdue',         away:'Queens (NC)',     hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'7:35PM', tv:'truTV',reg:'South',  st:'today',sp:-25.5, opn:-25.5, tot:159.5,ml:-8000},
-  {home:'Miami (FL)',     away:'Missouri',        hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'10:10PM',   tv:'truTV',reg:'West',   st:'today',sp:-1.5,  opn:-1.5,  tot:145.5,ml:-130},
-  {home:'Florida',        away:'Prairie View A&M',hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'9:25PM',  tv:'TNT',  reg:'South',  st:'today',sp:-35.5, opn:-35.5, tot:154.5,ml:-100000},
-  {home:'Kansas',         away:'Cal Baptist',     hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'9:45PM',  tv:'CBS',  reg:'South',  st:'today',sp:-14.5, opn:-14.5, tot:141.5,ml:-1200},
-  {home:'UConn',          away:'Furman',          hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'10:00PM',    tv:'TBS',  reg:'East',   st:'today',sp:-20.5, opn:-20.5, tot:135.5,ml:-2500},
+  {home:'Iowa',           away:'Clemson',         hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'6:50PM',  tv:'TNT',  reg:'South',  st:'upcoming',sp:-1.5,  opn:-1.5,  tot:128.5,ml:-120},
+  {home:"St. John's",     away:'Northern Iowa',   hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'7:10PM',  tv:'CBS',  reg:'West',   st:'upcoming',sp:-9.5,  opn:-9.5,  tot:131.5,ml:-535},
+  {home:'UCLA',           away:'UCF',             hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'7:25PM',  tv:'TBS',  reg:'East',   st:'upcoming',sp:-5.5,  opn:-5.5,  tot:151.5,ml:-245},
+  {home:'Purdue',         away:'Queens (NC)',     hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'7:35PM', tv:'truTV',reg:'South',  st:'upcoming',sp:-25.5, opn:-25.5, tot:159.5,ml:-8000},
+  {home:'Miami (FL)',     away:'Missouri',        hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'10:10PM',   tv:'truTV',reg:'West',   st:'upcoming',sp:-1.5,  opn:-1.5,  tot:145.5,ml:-130},
+  {home:'Florida',        away:'Prairie View A&M',hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'9:25PM',  tv:'TNT',  reg:'South',  st:'upcoming',sp:-35.5, opn:-35.5, tot:154.5,ml:-100000},
+  {home:'Kansas',         away:'Cal Baptist',     hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'9:45PM',  tv:'CBS',  reg:'South',  st:'upcoming',sp:-14.5, opn:-14.5, tot:141.5,ml:-1200},
+  {home:'UConn',          away:'Furman',          hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'10:00PM',    tv:'TBS',  reg:'East',   st:'upcoming',sp:-20.5, opn:-20.5, tot:135.5,ml:-2500},
   // ── SAT MAR 21 R32 — Lines verified ESPN/Yahoo/BetMGM ────────
-  {home:'Michigan',       away:'Saint Louis',     hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'12:10PM', tv:'CBS',  reg:'East',   st:'tmrw', sp:-12.5, opn:-12.5, tot:159.5,ml:-750},
-  {home:'Michigan State', away:'Louisville',      hs:3, as:6, rd:'R32',date:'Sat 3/21',time:'2:45PM',  tv:'CBS',  reg:'East',   st:'tmrw', sp:-6.5,  opn:-6.5,  tot:141.0,ml:-250},
-  {home:'Duke',           away:'TCU',             hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'5:15PM',  tv:'CBS',  reg:'East',   st:'tmrw', sp:-11.5, opn:-11.5, tot:143.5,ml:-600},
-  {home:'Houston',        away:'Texas A&M',       hs:2, as:10,rd:'R32',date:'Sat 3/21',time:'6:10PM',  tv:'TNT',  reg:'South',  st:'tmrw', sp:-8.5,  opn:-8.5,  tot:142.5,ml:-500},
-  {home:'Gonzaga',        away:'Texas',           hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:10PM',  tv:'TBS',  reg:'West',   st:'tmrw', sp:-6.5,  opn:-6.5,  tot:147.5,ml:-230},
-  {home:'Illinois',       away:'VCU',             hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:50PM',  tv:'CBS',  reg:'Midwest',st:'tmrw', sp:-10.5, opn:-10.5, tot:151.5,ml:-550},
-  {home:'Vanderbilt',     away:'Nebraska',        hs:5, as:4, rd:'R32',date:'Sat 3/21',time:'8:45PM',  tv:'TNT',  reg:'South',  st:'tmrw', sp:-2.5,  opn:-2.5,  tot:140.5,ml:-140},
-  {home:'Arkansas',       away:'High Point',      hs:4, as:12,rd:'R32',date:'Sat 3/21',time:'9:45PM',  tv:'TBS',  reg:'West',   st:'tmrw', sp:-11.5, opn:-11.5, tot:168.5,ml:-600},
+  {home:'Michigan',       away:'Saint Louis',     hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'12:10PM', tv:'CBS',  reg:'East',   st:'upcoming', sp:-12.5, opn:-12.5, tot:159.5,ml:-750},
+  {home:'Michigan State', away:'Louisville',      hs:3, as:6, rd:'R32',date:'Sat 3/21',time:'2:45PM',  tv:'CBS',  reg:'East',   st:'upcoming', sp:-6.5,  opn:-6.5,  tot:141.0,ml:-250},
+  {home:'Duke',           away:'TCU',             hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'5:15PM',  tv:'CBS',  reg:'East',   st:'upcoming', sp:-11.5, opn:-11.5, tot:143.5,ml:-600},
+  {home:'Houston',        away:'Texas A&M',       hs:2, as:10,rd:'R32',date:'Sat 3/21',time:'6:10PM',  tv:'TNT',  reg:'South',  st:'upcoming', sp:-8.5,  opn:-8.5,  tot:142.5,ml:-500},
+  {home:'Gonzaga',        away:'Texas',           hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:10PM',  tv:'TBS',  reg:'West',   st:'upcoming', sp:-6.5,  opn:-6.5,  tot:147.5,ml:-230},
+  {home:'Illinois',       away:'VCU',             hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:50PM',  tv:'CBS',  reg:'Midwest',st:'upcoming', sp:-10.5, opn:-10.5, tot:151.5,ml:-550},
+  {home:'Vanderbilt',     away:'Nebraska',        hs:5, as:4, rd:'R32',date:'Sat 3/21',time:'8:45PM',  tv:'TNT',  reg:'South',  st:'upcoming', sp:-2.5,  opn:-2.5,  tot:140.5,ml:-140},
+  {home:'Arkansas',       away:'High Point',      hs:4, as:12,rd:'R32',date:'Sat 3/21',time:'9:45PM',  tv:'TBS',  reg:'West',   st:'upcoming', sp:-11.5, opn:-11.5, tot:168.5,ml:-600},
 ];
 
-// Simulated live in-progress games
 const T26=new Set([
   'Iowa State','Tennessee State','Virginia','Wright State','Arizona','Long Island',
   'Alabama','Hofstra','Tennessee','Miami (OH)','Villanova','Utah State',
@@ -940,7 +925,6 @@ async function fetchLiveOdds(){
       (T26.has(g.home_team) || T26.has(g.away_team))
     );
     if(games.length > 0){
-      state.hasLiveData = true;
       setLiveLabel();
       showApiOk(res.headers.get('x-requests-remaining'));
       return mergeLive(games);
@@ -1294,18 +1278,14 @@ function renderPicks(){
   const f=state.filter;
   let games=[...state.games];
 
-  // Time-window filter: only show games within 3hrs past OR future (skip for 'all'/'results')
-  if(f!=='all' && f!=='results'){
-    games = games.filter(g => g.status!=='done' && isInWindow(g));
-  }
-
-  if(f==='in-progress')   games = games.filter(g => hasStarted(g));
-  else if(f==='upcoming') games = games.filter(g => !hasStarted(g));
-  else if(f==='strong')   games = games.filter(g => recommend(g).tier==='strong');
-  else if(f==='sharp')    games = games.filter(g => g.rlm||g.steam);
-  else if(f==='ev')       games = games.filter(g => g.ev>2);
-  else if(f==='results')  { games = [...state.games].filter(g => g.status==='done'); }
-  else if(['south','east','west','midwest'].includes(f)) games = games.filter(g => g.region&&g.region.toLowerCase()===f);
+  if(f==='upcoming') games = games.filter(g => g.status!=='done');
+  else if(f==='strong')  games = games.filter(g => g.status!=='done' && recommend(g).tier==='strong');
+  else if(f==='lean')    games = games.filter(g => g.status!=='done' && recommend(g).tier==='lean');
+  else if(f==='sharp')   games = games.filter(g => g.status!=='done' && (g.rlm||g.steam));
+  else if(f==='ev')      games = games.filter(g => g.status!=='done' && g.ev>2);
+  else if(f==='results') games = games.filter(g => g.status==='done');
+  else if(['south','east','west','midwest'].includes(f)) games = games.filter(g => g.status!=='done' && g.region&&g.region.toLowerCase()===f);
+  else games = games.filter(g => g.status!=='done'); // 'all' = all upcoming
 
   games.sort((a,b) => b.edgeScore - a.edgeScore);
 
@@ -1318,7 +1298,6 @@ function renderCard(g){
   const rec = recommend(g);
   const ts = g.books.thescore || {};
   const tracked = state.bets.some(b => b.gameId === g.id);
-  const started = hasStarted(g);
   const homeATS = getATS(g.home);
   const awayATS = getATS(g.away);
   const homeIsFav = g.curSpread < 0;
@@ -1330,24 +1309,13 @@ function renderCard(g){
                  : '#9ca3af';
 
   // ── Status label ──
-  const statusLabel = started && g.status==='today' ? '🔴 In Progress'
-                    : g.status==='today' ? 'Today'
-                    : g.status==='tmrw'  ? 'Sat 3/21'
-                    : g.status==='done'  ? `Final ${g.fin ? g.fin.a+'-'+g.fin.h : ''}` : '';
+  const statusLabel = g.status==='done'     ? `Final ${g.fin ? g.fin.a+'-'+g.fin.h : ''}`
+                    : g.status==='upcoming' ? (g.date||g.tv ? `${g.date||''} · ${g.tv||''}`.trim().replace(/^ · | · $/,'') : '')
+                    : '';
 
   // ── Why text — one plain sentence ──
   const why = rec.explanation || rec.edgeSummary || 'No strong signals — model edge only';
 
-  // ── Opening lines banner (in-progress only) ──
-  const openBanner = started && g.status==='today' ? `
-    <div style="margin:0 14px 10px;padding:9px 12px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;display:flex;align-items:center;gap:10px;">
-      <span style="font-size:13px;">📋</span>
-      <div>
-        <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:2px;">Opening Lines</div>
-        <div style="font-size:13px;color:#374151;">${g.away} ${fmtSp(-g.openSpread)} · ${g.home} ${fmtSp(g.openSpread)} · O/U ${g.curTotal}</div>
-      </div>
-      <div style="margin-left:auto;font-size:11px;color:#92400e;font-weight:600;">Check theScore for live line</div>
-    </div>` : '';
 
   // ── ATS snippet (1-2 lines max) ──
   let atsSnippet = '';
@@ -1383,9 +1351,6 @@ function renderCard(g){
         <span style="font-size:11px;color:rgba(255,255,255,.75);">${statusLabel}</span>
       </div>
     </div>
-
-    <!-- Opening lines if in progress -->
-    ${openBanner}
 
     <!-- Body -->
     <div style="padding:12px 14px ${rec.tier==='none'?'12px':'6px'};">
@@ -1774,41 +1739,40 @@ function resetApp(){if(!confirm('Reset everything?'))return;localStorage.removeI
 function renderToday(){
   const el = document.getElementById('today-list');
   if(!el) return;
-
-  const games = [...state.games]
-    .filter(g => g.status === 'today' || g.status === 'tmrw')
+  const games = state.games
+    .filter(g => g.status !== 'done')
     .sort((a,b) => {
-      const dateOrder = {today:0, tmrw:1};
-      if(dateOrder[a.status] !== dateOrder[b.status])
-        return dateOrder[a.status] - dateOrder[b.status];
-      const ta = parseGameTime(a.time, a.date);
-      const tb = parseGameTime(b.time, b.date);
+      // Sort by round first (R64 before R32), then by time
+      const ro = {R64:0, R32:1, S16:2, E8:3, F4:4, NCG:5};
+      const ra = ro[a.round]??9, rb = ro[b.round]??9;
+      if(ra !== rb) return ra - rb;
+      const ta = parseGameTime(a.time, a.date), tb = parseGameTime(b.time, b.date);
       if(ta && tb) return ta - tb;
       return 0;
     });
 
   if(!games.length){
-    el.innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--t4);font-size:14px;">No games today.</div>';
+    el.innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--t4);font-size:14px;">No upcoming games.</div>';
     return;
   }
 
-  // Group by date
+  // Group by round
   const groups = {};
   games.forEach(g => {
-    const key = g.status === 'today' ? 'Today — Fri Mar 20' : 'Tomorrow — Sat Mar 21';
+    const key = g.round || 'Other';
     if(!groups[key]) groups[key] = [];
     groups[key].push(g);
   });
 
+  const roundLabels = {R64:'Round of 64',R32:'Round of 32',S16:'Sweet 16',E8:'Elite 8',F4:'Final Four',NCG:'Championship'};
   let html = '';
-  Object.entries(groups).forEach(([label, gs]) => {
-    html += `<div style="padding:10px 16px 4px;font-size:11px;font-weight:800;color:var(--t4);letter-spacing:.8px;text-transform:uppercase;background:var(--bg);">${label}</div>`;
-    // Use same renderCard() as Picks tab — fully consistent
+  Object.entries(groups).forEach(([round, gs]) => {
+    html += `<div style="padding:10px 16px 4px;font-size:11px;font-weight:800;color:var(--t4);letter-spacing:.8px;text-transform:uppercase;background:var(--bg);">${roundLabels[round]||round}</div>`;
     gs.forEach(g => { html += renderCard(g); });
   });
-
   el.innerHTML = html;
 }
+
 
 
 // ════════════════════════════════════════
@@ -1820,7 +1784,7 @@ function renderDogs(){
 
   // Get all active games where we can identify the underdog
   const underdog_games = state.games
-    .filter(g => g.status !== 'done' && isInWindow(g))
+    .filter(g => g.status !== 'done')
     .map(g => {
       const dogTeam  = g.curSpread > 0 ? g.home : g.away;  // positive spread = dog
       const favTeam  = g.curSpread < 0 ? g.home : g.away;
@@ -1917,7 +1881,7 @@ function renderStats(){
   if(!toolsEl) return;
 
   // Get active games
-  const activeGames = state.games.filter(g => isInWindow(g) && g.status !== 'done');
+  const activeGames = state.games.filter(g => g.status !== 'done');
   if(!activeGames.length) return;
 
   // Build the stats section inside the tools page
@@ -2031,7 +1995,7 @@ setInterval(refreshAll,300000); // 5 min — pre-game lines stable
 function renderBestBet(){
   const el = document.getElementById('best-bet-widget');
   if(!el) return;
-  const pool = state.games.filter(g => g.status !== 'done' && isInWindow(g) && !hasStarted(g));
+  const pool = state.games.filter(g => g.status !== 'done');
   if(!pool.length){ el.style.display='none'; return; }
   const best = pool.map(g => ({g, rec: recommend(g)})).sort((a,b) => b.rec.score - a.rec.score)[0];
   if(!best || best.rec.units === 0){ el.style.display='none'; return; }
@@ -2064,14 +2028,11 @@ function renderBestBet(){
 // ════════════════════════════════════════
 async function init(){
   loadState();
-  updateKPIs();
-  document.getElementById('bm-date').value=new Date().toISOString().split('T')[0];
-  state.games=await fetchLiveOdds();
+  state.games = await fetchLiveOdds();
   renderPicks();
   renderBestBet();
   updateKPIs();
-  const t=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  const lbl=document.getElementById('live-lbl');if(lbl)lbl.textContent=t;
+  document.getElementById('bm-date').value = new Date().toISOString().split('T')[0];
 }
 init();
 </script>
