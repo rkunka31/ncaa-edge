@@ -83,7 +83,7 @@ body {
   cursor: pointer; background: none; border: none;
   gap: 3px; transition: color .15s;
 }
-.nav-item .nav-icon { font-size: 20px; line-height: 1; }
+.nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .nav-item.active { color: var(--accent); }
 
 /* ── PAGES ── */
@@ -347,7 +347,7 @@ body {
   <span class="hdr-sub">March Madness · Upcoming</span>
   <div class="hdr-right">
     <div class="bankroll-btn" onclick="openBankrollModal()">$<span class="amt" id="bankrollDisplay">1,000</span></div>
-    <button onclick="refreshAll()" style="background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;" id="live-btn">↻ <span id="live-lbl">Refresh</span></button>
+    <button onclick="refreshAll()" style="background:none;border:1px solid var(--line2);border-radius:8px;padding:6px 10px;color:var(--t3);cursor:pointer;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;" id="live-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.41-6.47"/></svg><span id="live-lbl">Refresh</span></button>
   </div>
 </div>
 
@@ -384,7 +384,7 @@ body {
   </div>
 
   <div id="no-key-banner" style="display:none;margin:12px 16px;background:rgba(217,119,6,0.08);border:1.5px solid rgba(217,119,6,0.3);border-radius:10px;padding:14px 16px;">
-    <div style="font-size:13px;font-weight:700;color:#d97706;margin-bottom:4px;">⚠️ Showing estimated lines — not live data</div>
+    <div style="font-size:13px;font-weight:700;color:#d97706;margin-bottom:4px;">📡 Using estimated lines — add API key in Settings for live data</div>
     <div style="font-size:12px;color:#8892a0;line-height:1.5;">Get a free API key at <strong style="color:#d0d5de;">the-odds-api.com</strong> (500 requests/month), then paste it in <strong style="color:#d0d5de;">Settings → Live Odds API</strong>. Live lines update every 90 seconds once connected.</div>
     <button onclick="showPage('settings',document.getElementById('nav-settings'))" style="margin-top:10px;background:#f39c12;color:#000;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:800;cursor:pointer;width:100%;">Go to Settings →</button>
   </div>
@@ -549,22 +549,22 @@ body {
 <!-- ── BOTTOM NAV ── -->
 <nav class="nav">
   <button class="nav-item active" id="nav-picks" onclick="showPage('picks',this)">
-    <span class="nav-icon">🏀</span>Picks
+    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Picks
   </button>
   <button class="nav-item" id="nav-today" onclick="showPage('today',this)">
-    <span class="nav-icon">📅</span>Today
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="15" x2="8" y2="15" stroke-width="2.5"/><line x1="12" y1="15" x2="12" y2="15" stroke-width="2.5"/><line x1="16" y1="15" x2="16" y2="15" stroke-width="2.5"/></svg>Today
   </button>
   <button class="nav-item" id="nav-dogs" onclick="showPage('dogs',this)">
-    <span class="nav-icon">🐶</span>Dogs
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M17 8l2-2m0 0l2-1m-2 1l1 2"/></svg>Dogs
   </button>
   <button class="nav-item" id="nav-tools" onclick="showPage('tools',this)">
-    <span class="nav-icon">📊</span>Stats
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats
   </button>
   <button class="nav-item" id="nav-tracker" onclick="showPage('tracker',this)">
-    <span class="nav-icon">📋</span>My Bets
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Bets
   </button>
   <button class="nav-item" id="nav-settings" onclick="showPage('settings',this)">
-    <span class="nav-icon">⚙️</span>Settings
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings
   </button>
 </nav>
 
@@ -613,15 +613,7 @@ body {
     <div class="modal-hdr"><div class="modal-title">Bankroll</div><button class="modal-close" onclick="closeBankrollModal()">✕</button></div>
     <div class="modal-body">
       <div class="form-row"><label class="form-lbl">Starting Bankroll ($)</label><input class="form-input" type="number" id="br-amount"></div>
-      <div class="form-row"><label class="form-lbl">Unit Size ($)</label><input class="form-input" type="number" id="br-unit"></div>
-      <div class="modal-actions">
-        <button class="btn-ghost" onclick="closeBankrollModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveBankroll()">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+      <div class="form-row"><label class="form-lbl">Unit Size ($)</label><input class="form-
 <script>
 'use strict';
 // ════════════════════════════════════════
@@ -1775,7 +1767,6 @@ function renderToday(){
   const games = [...state.games]
     .filter(g => g.status === 'today' || g.status === 'tmrw')
     .sort((a,b) => {
-      // Sort by date first, then tip time
       const dateOrder = {today:0, tmrw:1};
       if(dateOrder[a.status] !== dateOrder[b.status])
         return dateOrder[a.status] - dateOrder[b.status];
@@ -1785,57 +1776,29 @@ function renderToday(){
       return 0;
     });
 
-  if(!games.length){ el.innerHTML='<div style="padding:40px 16px;text-align:center;color:var(--t4);font-size:14px;">No games today.</div>'; return; }
+  if(!games.length){
+    el.innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--t4);font-size:14px;">No games today.</div>';
+    return;
+  }
 
   // Group by date
-  const grouped = {};
+  const groups = {};
   games.forEach(g => {
     const key = g.status === 'today' ? 'Today — Fri Mar 20' : 'Tomorrow — Sat Mar 21';
-    if(!grouped[key]) grouped[key] = [];
-    grouped[key].push(g);
+    if(!groups[key]) groups[key] = [];
+    groups[key].push(g);
   });
 
   let html = '';
-  Object.entries(grouped).forEach(([label, gs]) => {
+  Object.entries(groups).forEach(([label, gs]) => {
     html += `<div style="padding:10px 16px 4px;font-size:11px;font-weight:800;color:var(--t4);letter-spacing:.8px;text-transform:uppercase;background:var(--bg);">${label}</div>`;
-    gs.forEach(g => {
-      const rec = recommend(g);
-      const ats = getATS(g.home);
-      const awayAts = getATS(g.away);
-      const homeIsFav = g.curSpread < 0;
-      const hdrColor = rec.tier==='strong' ? '#16a34a' : rec.tier==='lean' ? '#0070f3' : '#9ca3af';
-      const started = hasStarted(g);
-      const statusDot = started ? '<span style="display:inline-block;width:7px;height:7px;background:#dc2626;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>' : '';
-
-      html += `<div style="background:var(--card);border-bottom:1px solid var(--line);padding:12px 16px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <div style="font-size:12px;color:var(--t3);">${statusDot}${g.time} ET · ${g.tv} · ${g.round}</div>
-          <div style="display:flex;gap:6px;align-items:center;">
-            ${rec.tier !== 'none' ? `<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;background:${hdrColor}18;color:${hdrColor};border:1px solid ${hdrColor}33;">${rec.emoji} ${rec.label}</span>` : ''}
-            <span style="font-size:11px;color:var(--t4);">EDGE ${g.edgeScore}</span>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <div style="flex:1;">
-            <div style="font-size:15px;font-weight:700;color:var(--t1);">#${g.awaySeed} ${g.away}</div>
-            ${awayAts ? `<div style="font-size:11px;color:var(--t3);margin-top:1px;">${homeIsFav ? `${awayAts.dogW}-${awayAts.dogL} ATS as dog` : `${awayAts.favW}-${awayAts.favL} ATS as fav`} · ${awayAts.tourW}-${awayAts.tourL} tourney</div>` : ''}
-          </div>
-          <div style="font-size:13px;font-weight:700;color:var(--t3);flex-shrink:0;">${fmtSp(-g.curSpread)}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:${rec.tier!=='none'?'8':'0'}px;padding-top:6px;border-top:1px solid var(--line);">
-          <div style="flex:1;">
-            <div style="font-size:15px;font-weight:700;color:var(--t1);">#${g.homeSeed} ${g.home}</div>
-            ${ats ? `<div style="font-size:11px;color:var(--t3);margin-top:1px;">${homeIsFav ? `${ats.favW}-${ats.favL} ATS as fav` : `${ats.dogW}-${ats.dogL} ATS as dog`} · ${ats.tourW}-${ats.tourL} tourney</div>` : ''}
-          </div>
-          <div style="font-size:13px;font-weight:700;color:var(--t3);flex-shrink:0;">${fmtSp(g.curSpread)}</div>
-        </div>
-        ${rec.tier !== 'none' ? `<div style="padding:8px 10px;background:var(--card2);border-radius:7px;border-left:3px solid ${hdrColor};font-size:12px;color:var(--t2);">${rec.betText} ${fmt(rec.oddsVal)} · <strong>$${rec.stake}</strong> · ${rec.explanation||rec.edgeSummary}</div>` : ''}
-      </div>`;
-    });
+    // Use same renderCard() as Picks tab — fully consistent
+    gs.forEach(g => { html += renderCard(g); });
   });
 
   el.innerHTML = html;
 }
+
 
 // ════════════════════════════════════════
 // DOGS TAB — underdogs sorted by ATS dog record
@@ -2092,7 +2055,6 @@ async function init(){
   loadState();
   updateKPIs();
   document.getElementById('bm-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('picks-list').innerHTML='<div class="loading"><div class="spinner"></div> Loading…</div>';
   state.games=await fetchLiveOdds();
   renderPicks();
   renderBestBet();
@@ -2100,7 +2062,6 @@ async function init(){
   const t=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   const lbl=document.getElementById('live-lbl');if(lbl)lbl.textContent=t;
 }
-init();
 </script>
 </body>
 </html>
