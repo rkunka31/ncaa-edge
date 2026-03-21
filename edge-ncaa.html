@@ -1191,91 +1191,92 @@ function buildGame(fb,live){
 // RECOMMENDATION ENGINE + LINE MOVEMENT + EXPLAINED SCORE
 // ════════════════════════════════════════
 function recommend(g){
-  const signals=[], reasons=[], explanations=[];
+  const signals=[], reasons=[];
   let score=0, betOn=null;
 
-  // ── FEATURE 1: Line Movement Alert ──
+  // ── Line movement ──
   const lineMove = parseFloat((g.curSpread - g.openSpread).toFixed(1));
   const absMv = Math.abs(lineMove);
   if(absMv >= 2.0){
-    const favMoved = lineMove < 0; // line moved further toward home being fav
-    const dir = favMoved ? 'toward favorite' : 'toward underdog';
-    const signal = favMoved ? 'PUBLIC STEAM' : 'SHARP MOVE';
-    const interp = favMoved
-      ? `Public piling on ${g.home} — potential fade to ${g.away} +${Math.abs(g.curSpread)}`
-      : `Line shifted ${absMv}pts toward underdog — sharp money on ${g.away}`;
-    signals.push(signal);
-    score += Math.min(22, absMv * 8);
-    explanations.push(`Line moved ${lineMove > 0 ? '+' : ''}${lineMove}pts from open (${fmtSp(g.openSpread)} → ${fmtSp(g.curSpread)}) — ${interp}`);
-    if(!betOn) betOn = favMoved ? 'away_spread' : 'away_spread';
-  } else if(absMv >= 0.5){
-    const interp = lineMove < 0 ? `Slight public lean on ${g.home}` : `Minor sharp interest on ${g.away}`;
-    explanations.push(`Line nudged ${lineMove > 0 ? '+' : ''}${lineMove}pts from open — ${interp}`);
+    const favMoved = lineMove < 0;
+    if(favMoved){
+      signals.push('PUBLIC STEAM');
+      reasons.push(`Line moved ${absMv}pts toward ${g.home} — public piling on, consider fading to ${g.away}`);
+      score += 12;
+      if(!betOn) betOn = 'away_spread';
+    } else {
+      signals.push('SHARP MOVE');
+      reasons.push(`Line moved ${absMv}pts toward ${g.away} — sharp money on underdog, possible value on ${g.away}`);
+      score += 18;
+      if(!betOn) betOn = 'away_spread';
+    }
   }
 
-  // ── RLM ──
+  // ── Reverse line movement ──
   if(g.rlm){
     const side = g.spreadMove < 0 ? g.home : g.away;
-    signals.push('RLM'); score += 25;
-    explanations.push(`Reverse line movement — ${g.pubBet}% of bets on ${g.home} but line moved for ${side}. Sharps on ${side}.`);
+    signals.push('RLM');
+    reasons.push(`Line moved against ${g.pubBet}% public — sharps backing ${side}`);
+    score += 25;
     if(!betOn) betOn = g.spreadMove < 0 ? 'home_spread' : 'away_spread';
   }
 
-  // ── STEAM ──
+  // ── Steam move ──
   if(g.steam){
-    signals.push('STEAM'); score += 20;
-    explanations.push(`Steam move — rapid coordinated line shift of ${Math.abs(g.spreadMove)}pts across all books simultaneously. Wiseguy action.`);
+    signals.push('STEAM');
+    reasons.push(`Steam move: ${absMv}pt shift across all books simultaneously`);
+    score += 20;
     if(!betOn) betOn = g.spreadMove < 0 ? 'home_spread' : 'away_spread';
   }
 
-  // ── BET/MONEY DIVERGENCE ──
+  // ── Bet/money divergence ──
   const div = g.pubBet - g.pubMon;
   if(Math.abs(div) >= 15){
     score += Math.min(20, Math.abs(div) * 0.6);
     if(div > 15){
       signals.push('SHARP $');
-      explanations.push(`${g.pubBet}% of bets on ${g.home} but only ${g.pubMon}% of money. Sharp dollars on ${g.away}.`);
+      reasons.push(`${g.pubBet}% of bets on ${g.home}, only ${g.pubMon}% of money — sharp dollars on ${g.away}`);
       if(!betOn) betOn = 'away_spread';
     } else {
       signals.push('SHARP $');
-      explanations.push(`${100-g.pubBet}% of bets on ${g.away} but sharp dollars loading ${g.home}. Follow the money.`);
+      reasons.push(`${100-g.pubBet}% of bets on ${g.away}, sharp money loading ${g.home}`);
       if(!betOn) betOn = 'home_spread';
     }
   }
 
-  // ── +EV ──
+  // ── Expected value ──
   if(g.ev > 2.5){
-    signals.push('+EV'); score += 18;
-    explanations.push(`Model gives ${g.home} a ${(g.modelProb*100).toFixed(0)}% win probability vs ${(g.impliedProb*100).toFixed(0)}% implied by the market. That's +${g.ev}% expected value.`);
+    signals.push('+EV');
+    score += 18;
+    reasons.push(`Model shows +${g.ev}% edge over market implied probability of ${(g.impliedProb*100).toFixed(0)}%`);
     if(!betOn) betOn = 'home_spread';
   }
 
-  // ── FADE PUBLIC ──
+  // ── Fade heavy public ──
   if(g.pubBet >= 75 && !g.rlm){
-    signals.push('FADE'); score += 12;
-    explanations.push(`${g.pubBet}% of public bets on ${g.home}. Heavy public sides cover at below 50% historically. Fade to ${g.away}.`);
+    signals.push('FADE');
+    score += 12;
+    reasons.push(`${g.pubBet}% public on ${g.home} — fade to ${g.away} +${Math.abs(g.curSpread)}`);
     if(!betOn) betOn = 'away_spread';
   }
 
-  // ── ATS TREND SIGNAL ──
+  // ── ATS trend boost ──
   const hAts = getATS(g.home);
   const aAts = getATS(g.away);
   const isFavHome = g.curSpread < 0;
-  const favRecord = isFavHome ? hAts.fav : aAts.fav;
-  const dogRecord = isFavHome ? aAts.dog : hAts.dog;
-  // Parse W-L and flag if dog is covering >55%
-  const parseWL = str => { const m=(str||'').match(/(\d+)-(\d+)/); return m?{w:+m[1],l:+m[2]}:{w:0,l:0}; };
-  const dogWL = parseWL(dogRecord);
-  const dogTotal = dogWL.w + dogWL.l;
-  if(dogTotal >= 8 && dogWL.w/dogTotal >= 0.55){
-    score += 10;
-    const dogTeam = isFavHome ? g.away : g.home;
-    explanations.push(`${dogTeam} covers ${dogRecord} as underdog this season — above the 50% threshold needed for +EV.`);
-    if(!betOn) betOn = isFavHome ? 'away_spread' : 'home_spread';
+  if(hAts && aAts){
+    const dogAts = isFavHome ? aAts : hAts;
+    const dogTotal = dogAts.dogW + dogAts.dogL;
+    if(dogTotal >= 5 && dogAts.dogW / dogTotal >= 0.60){
+      score += 8;
+      const dogTeam = isFavHome ? g.away : g.home;
+      reasons.push(`${dogTeam} is ${dogAts.dogW}-${dogAts.dogL} ATS as underdog this season (${Math.round(dogAts.dogW/dogTotal*100)}% cover rate)`);
+    }
   }
 
   if(!betOn) betOn = g.ev > 0 ? 'home_spread' : 'away_spread';
 
+  // ── Determine bet text ──
   const ts = g.books.thescore || {};
   let betText='', oddsVal=-110;
   if(betOn==='home_spread'){ betText=`${g.home} ${fmtSp(g.curSpread)}`; oddsVal=ts.homeSpreadOdds??-110; }
@@ -1283,6 +1284,7 @@ function recommend(g){
   else if(betOn==='home_ml'){ betText=`${g.home} ML`; oddsVal=g.homeML; }
   else if(betOn==='away_ml'){ betText=`${g.away} ML`; oddsVal=g.awayML; }
 
+  // ── Tier ──
   let tier,label,emoji,cls,units;
   if(score>=50){tier='strong';label='STRONG BET';emoji='🔥';cls='strong';units=3;}
   else if(score>=28){tier='lean';label='LEAN BET';emoji='✅';cls='lean';units=2;}
@@ -1292,15 +1294,32 @@ function recommend(g){
   const stake = units * state.unit;
   const conf = Math.min(95, Math.max(5, score * 1.3 + 15));
 
-  // ── FEATURE 4: Plain-English Score Breakdown ──
+  // ── Plain-English explanation ──
+  const edgeSummary = reasons.length > 0
+    ? reasons.slice(0,2).join(' · ')
+    : 'No significant signals — small model edge only';
+  const explanation = reasons[0] || '';
+
+  // ── ATS context for detail panel ──
+  const atsContext = [];
+  if(hAts){
+    const r = isFavHome ? `${hAts.favW}-${hAts.favL}` : `${hAts.dogW}-${hAts.dogL}`;
+    atsContext.push(`${g.home} is ${r} ATS as ${isFavHome?'favorite':'underdog'} this season`);
+    if(hAts.tourW+hAts.tourL>0) atsContext.push(`${g.home} tournament ATS: ${hAts.tourW}-${hAts.tourL}`);
+    atsContext.push(hAts.trend);
+  }
+  if(aAts){
+    const r2 = !isFavHome ? `${aAts.favW}-${aAts.favL}` : `${aAts.dogW}-${aAts.dogL}`;
+    atsContext.push(`${g.away} is ${r2} ATS as ${!isFavHome?'favorite':'underdog'} this season`);
+    atsContext.push(aAts.trend);
+  }
+
+  // ── Score breakdown (Feature 4) ──
   const scoreBreakdown = buildScoreBreakdown(g, signals, score, conf);
 
   return{tier,label,emoji,cls,betText,oddsVal,betOn,signals,
-    reasons: explanations,  // now full sentences
-    scoreBreakdown,
-    units,stake,conf,score,
-    lineMove, absMv,
-  };
+    reasons, explanation, edgeSummary, atsContext, scoreBreakdown,
+    units, stake, conf, score, lineMove, absMv};
 }
 
 // ── FEATURE 4: Score breakdown builder ──
@@ -1603,13 +1622,15 @@ function renderCard(g){
   // ── FEATURE 2: ATS trend summary (compact) ──
   function atsSummary(ats, name, isFav){
     if(!ats) return '';
-    const rec = isFav ? ats.asFav : ats.asDog;
-    const pct = rec[0]+rec[1] > 0 ? Math.round(rec[0]/(rec[0]+rec[1])*100) : 50;
+    const w = isFav ? ats.favW : ats.dogW;
+    const l = isFav ? ats.favL : ats.dogL;
+    const total = w + l;
+    if(total === 0) return '';
+    const pct = Math.round(w / total * 100);
     const color = pct >= 55 ? '#16a34a' : pct <= 45 ? '#dc2626' : '#6b7280';
     return `<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--line);">
-      <span style="font-size:12px;font-weight:600;color:var(--t1);min-width:90px;">${name}</span>
-      <span style="font-size:11px;color:var(--t3);">${isFav?'as fav':'as dog'}</span>
-      <span style="font-size:12px;font-weight:700;color:${color};margin-left:auto;">${rec[0]}-${rec[1]} ATS (${pct}%)</span>
+      <span style="font-size:12px;color:var(--t2);flex:1;">${name} <span style="color:var(--t3);">as ${isFav?'fav':'dog'}</span></span>
+      <span style="font-size:12px;font-weight:700;color:${color};margin-left:auto;">${w}-${l} ATS (${pct}%)</span>
     </div>`;
   }
 
@@ -2151,7 +2172,7 @@ function renderBestBet(){
       <div style="font-size:12px;color:var(--t3);margin-bottom:4px;">#${g.awaySeed} ${g.away} vs #${g.homeSeed} ${g.home} · ${g.time} ET · ${g.tv}</div>
       <div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px;">${rec.betText}</div>
       <div style="font-size:14px;color:var(--t2);margin-bottom:8px;">${fmt(rec.oddsVal)} theScore · $${rec.stake} (${rec.units}u)</div>
-      <div style="font-size:12px;color:var(--t3);line-height:1.5;padding:8px 10px;background:var(--card2);border-radius:7px;">${rec.edgeSummary||rec.reasons[0]||'Model edge identified'}</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.5;padding:8px 10px;background:var(--card2);border-radius:7px;">${rec.edgeSummary||rec.edgeSummary||'Model edge identified'}</div>
       <div style="display:flex;gap:6px;margin-top:10px;">
         <button onclick="openBetModalForGame('${g.id}')" style="flex:1;background:${confColor};color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">+ Track This Bet</button>
         <button onclick="addParlayLeg('${g.id}','${rec.betOn}')" style="background:var(--card2);border:1px solid var(--line2);color:var(--t2);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;">+ Parlay</button>
