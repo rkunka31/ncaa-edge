@@ -64,15 +64,8 @@ body {
   padding: 6px 12px; border-radius: 8px; cursor: pointer;
 }
 .bankroll-btn .amt { color: var(--accent); }
-.live-btn {
-  display: flex; align-items: center; gap: 5px;
-  background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.3);
-  border-radius: 8px; padding: 6px 10px;
-  font-size: 11px; font-weight: 800; color: var(--live-red);
-  cursor: pointer; letter-spacing: 0.3px;
-}
-.pulse { width: 7px; height: 7px; background: var(--live-red); border-radius: 50%; animation: pulse 1.4s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.25;transform:scale(.6)} }
+
+
 
 /* ── BOTTOM NAV ── */
 .nav {
@@ -442,12 +435,10 @@ body {
 <!-- ── HEADER ── -->
 <div class="hdr">
   <span class="hdr-logo">EDGE</span>
-  <span class="hdr-sub">NCAA '26</span>
+  <span class="hdr-sub">March Madness · Upcoming</span>
   <div class="hdr-right">
     <div class="bankroll-btn" onclick="openBankrollModal()">$<span class="amt" id="bankrollDisplay">1,000</span></div>
-    <div class="live-btn" onclick="refreshAll()" id="live-btn">
-      <div class="pulse"></div><span id="live-lbl">LIVE</span>
-    </div>
+    <button onclick="refreshAll()" style="background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;" id="live-btn">↻ <span id="live-lbl">Refresh</span></button>
   </div>
 </div>
 
@@ -464,9 +455,9 @@ body {
 
   <!-- Filter pills -->
   <div class="filters" id="picks-filters">
-    <button class="pill live-pill on"  onclick="filterPicks('live',this)">🔴 Live</button>
-    <button class="pill on"            onclick="filterPicks('all',this)">All</button>
-    <button class="pill"               onclick="filterPicks('today',this)">Today</button>
+
+    <button class="pill on"            onclick="filterPicks('upcoming',this)">Upcoming</button>
+    <button class="pill"               onclick="filterPicks('today',this)">Tonight</button>
     <button class="pill"               onclick="filterPicks('tmrw',this)">Sat 3/21</button>
     <button class="pill"               onclick="filterPicks('strong',this)">🔥 Strong Bets</button>
     <button class="pill"               onclick="filterPicks('sharp',this)">Sharp Money</button>
@@ -475,6 +466,7 @@ body {
     <button class="pill"               onclick="filterPicks('east',this)">East</button>
     <button class="pill"               onclick="filterPicks('west',this)">West</button>
     <button class="pill"               onclick="filterPicks('midwest',this)">Midwest</button>
+    <button class="pill"               onclick="filterPicks('all',this)">All + Results</button>
   </div>
 
   <div id="no-key-banner" style="display:none;margin:12px 16px;background:rgba(217,119,6,0.08);border:1.5px solid rgba(217,119,6,0.3);border-radius:10px;padding:14px 16px;">
@@ -482,6 +474,7 @@ body {
     <div style="font-size:12px;color:#8892a0;line-height:1.5;">Get a free API key at <strong style="color:#d0d5de;">the-odds-api.com</strong> (500 requests/month), then paste it in <strong style="color:#d0d5de;">Settings → Live Odds API</strong>. Live lines update every 90 seconds once connected.</div>
     <button onclick="showPage('settings',document.getElementById('nav-settings'))" style="margin-top:10px;background:#f39c12;color:#000;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:800;cursor:pointer;width:100%;">Go to Settings →</button>
   </div>
+  <div style="padding:6px 16px 8px;font-size:11px;color:var(--t4);border-bottom:1px solid var(--line);">Pre-game lines only · Auto-refreshes every 90s · Powered by DraftKings / FanDuel / BetMGM</div>
   <div id="picks-list"><div class="loading"><div class="spinner"></div> Loading...</div></div>
 </div>
 
@@ -691,7 +684,7 @@ let state = {
   apiKey:'1b8e7af59dfb8b569038821160756c9d', defaultBook:'theScore Bet',
   kellyFraction:.5,
   weights:{rlm:25,steam:20,diverge:20,ev:20,model:15},
-  filter:'all',
+  filter: 'upcoming',
 };
 function loadState(){ try{const s=localStorage.getItem(SK);if(s)state={...state,...JSON.parse(s)};}catch(e){} }
 function saveState(){ try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){} }
@@ -770,16 +763,6 @@ const FALLBACK=[
 ];
 
 // Simulated live in-progress games
-const LIVE_GAMES=[
-  // Active live games as of Fri Mar 20 ~7:30PM ET
-  // Scores/lines from theScore/CBS live tracker
-  {home:'Iowa',         away:'Clemson',       score:{h:35,a:31},period:'2nd Half',clock:'15:22',liveSpread:-1.5,liveML:-130},
-  {home:"St. John's",   away:'Northern Iowa', score:{h:42,a:14},period:'1st Half', clock:'5:10', liveSpread:-18.0,liveML:-2000},
-  {home:'UCLA',         away:'UCF',           score:{h:38,a:24},period:'1st Half', clock:'4:30', liveSpread:-9.5,liveML:-500},
-  {home:'Purdue',       away:'Queens (NC)',   score:{h:51,a:28},period:'2nd Half',clock:'12:00',liveSpread:-31.0,liveML:-10000},
-  {home:'Miami (FL)',   away:'Missouri',      score:{h:12,a:10},period:'1st Half', clock:'14:00',liveSpread:-1.5,liveML:-135},
-];
-
 const T26=new Set([
   'Iowa State','Tennessee State','Virginia','Wright State','Arizona','Long Island',
   'Alabama','Hofstra','Tennessee','Miami (OH)','Villanova','Utah State',
@@ -912,19 +895,18 @@ function buildGame(fb,live){
     Math.min(w.diverge*n,Math.abs(pubBet-pubMon)*(w.diverge*n/30))+
     (ev>3?w.ev*n:ev>1?w.ev*n*.5:0)+(Math.abs(mod-imp)>.05?w.model*n:0)+ri(0,14)
   ));
-  const lg=LIVE_GAMES.find(l=>l.home===fb.home&&l.away===fb.away);
   return{
     id:(fb.home+fb.away).replace(/\W/g,''),
     home:fb.home,away:fb.away,homeSeed:fb.hs||'?',awaySeed:fb.as||'?',
     round:fb.rd,date:fb.date,time:fb.time,tv:fb.tv,region:fb.reg,status:fb.st,
     books:{thescore:ts,draftkings:dk,fanduel:fd,betmgm:mgm},
     curSpread:curSp,openSpread:fb.opn,spreadMove:mv,curTotal:curTot,homeML,awayML,
-    pubBet,pubMon,rlm,steam,modelProb:parseFloat(mod.toFixed(3)),impliedProb:parseFloat(imp.toFixed(3)),
-    ev,edgeScore,
-    isLive:!!lg,liveScore:lg?.score||null,livePeriod:lg?.period||null,liveClock:lg?.clock||null,
-    liveSpread:lg?.liveSpread??null,liveML:lg?.liveML??null,
+    pubBet,pubMon,rlm,steam,
+    modelProb:parseFloat(mod.toFixed(3)),impliedProb:parseFloat(imp.toFixed(3)),
+    ev,edgeScore,fin:fb.fin||null,
   };
 }
+
 
 // ════════════════════════════════════════
 // RECOMMENDATION ENGINE
@@ -933,23 +915,7 @@ function recommend(g){
   const signals=[],reasons=[];
   let score=0,betOn=null;
 
-  if(g.isLive&&g.liveScore){
-    const diff=g.liveScore.h-g.liveScore.a;
-    const favHome=g.openSpread<0;
-    const liveSp=g.liveSpread??g.curSpread;
-    const shift=Math.abs(liveSp)-Math.abs(g.openSpread);
-    if(favHome&&diff<0&&shift<0){
-      score+=Math.min(35,40+Math.abs(shift)*8+Math.abs(diff)*3);
-      signals.push('LIVE OPP');
-      reasons.push(`Was ${fmt(g.openSpread)} opener, now trailing ${Math.abs(diff)}pts — live line moved to ${fmt(liveSp)}, buy the dip`);
-      betOn='home_live';
-    }
-    if(!favHome&&diff>0&&shift>2){
-      score+=30; signals.push('LIVE OPP');
-      reasons.push(`${g.home} +${Math.abs(g.openSpread)} opener, now leading ${diff}pts — underdog live momentum`);
-      betOn='home_live';
-    }
-  }
+  // pre-game only — no live opportunity detection
   if(g.rlm){
     const side=g.spreadMove<0?g.home:g.away;
     signals.push('RLM'); score+=25;
@@ -972,17 +938,14 @@ function recommend(g){
   if(!betOn)betOn=g.ev>0?'home_spread':'away_spread';
 
   const ts=g.books.thescore||{};
-  const liveSp=g.liveSpread??g.curSpread;
   let betText='',oddsVal=-110;
-  if(betOn==='home_live'){betText=`LIVE: ${g.home} ${fmtSp(liveSp)}`;oddsVal=g.liveML??ts.homeSpreadOdds??-110;}
-  else if(betOn==='home_spread'){betText=`${g.home} ${fmtSp(g.curSpread)}`;oddsVal=ts.homeSpreadOdds??-110;}
+  if(betOn==='home_spread'){betText=`${g.home} ${fmtSp(g.curSpread)}`;oddsVal=ts.homeSpreadOdds??-110;}
   else if(betOn==='away_spread'){const as=-g.curSpread;betText=`${g.away} ${fmtSp(as)}`;oddsVal=ts.awaySpreadOdds??-110;}
   else if(betOn==='home_ml'){betText=`${g.home} ML`;oddsVal=g.homeML;}
   else if(betOn==='away_ml'){betText=`${g.away} ML`;oddsVal=g.awayML;}
 
   let tier,label,emoji,cls,units;
-  if(betOn==='home_live'&&score>=40){tier='live';label='LIVE BET';emoji='🔴';cls='live';units=2;}
-  else if(score>=50){tier='strong';label='STRONG BET';emoji='🔥';cls='strong';units=3;}
+  if(score>=50){tier='strong';label='STRONG BET';emoji='🔥';cls='strong';units=3;}
   else if(score>=28){tier='lean';label='LEAN BET';emoji='✅';cls='lean';units=2;}
   else if(score>0&&signals.length>0){tier='lean';label='LIGHT PLAY';emoji='👁';cls='lean';units=1;}
   else{tier='none';label='NO EDGE';emoji='➖';cls='none';units=0;}
@@ -1004,15 +967,15 @@ function renderPicks(){
   if (banner) banner.style.display = state.apiKey ? 'none' : 'block';
   const f=state.filter;
   let games=[...state.games];
-  if(f==='live')    games=games.filter(g=>g.isLive);
-  else if(f==='today')  games=games.filter(g=>g.status==='today'||g.isLive);
+  if(f==='upcoming') games=games.filter(g=>g.status==='today'||g.status==='tmrw');
+  else if(f==='today')   games=games.filter(g=>g.status==='today');
   else if(f==='tmrw')   games=games.filter(g=>g.status==='tmrw');
   else if(f==='strong') games=games.filter(g=>recommend(g).tier==='strong'||recommend(g).tier==='live');
   else if(f==='sharp')  games=games.filter(g=>g.rlm||g.steam);
   else if(f==='ev')     games=games.filter(g=>g.ev>2);
   else if(['south','east','west','midwest'].includes(f))games=games.filter(g=>g.region&&g.region.toLowerCase()===f);
   // Live first, then by edge score desc, exclude 'done' unless explicitly shown
-  games=games.filter(g=>g.status!=='done'||f==='all').sort((a,b)=>(b.isLive?100:0)+b.edgeScore-(((a.isLive?100:0)+a.edgeScore)));
+  games=games.filter(g=>g.status!=='done'||f==='all'||f==='results').sort((a,b)=>b.edgeScore-a.edgeScore);
 
   const el=document.getElementById('picks-list');
   if(!games.length){el.innerHTML='<div class="empty">No games match this filter.</div>';return;}
@@ -1026,8 +989,7 @@ function renderCard(g){
 
   // Status badge
   let badge='';
-  if(g.isLive) badge=`<span class="rc-badge badge-live">🔴 LIVE ${g.livePeriod} ${g.liveClock}</span>`;
-  else if(g.status==='today') badge=`<span class="rc-badge badge-today">TODAY</span>`;
+  if(g.status==='today') badge=`<span class="rc-badge badge-today">TODAY</span>`;
   else if(g.status==='tmrw')  badge=`<span class="rc-badge badge-tmrw">SAT 3/21</span>`;
   else if(g.status==='done')  badge=`<span class="rc-badge badge-done">FINAL ${g.fin?g.fin.a+' – '+g.fin.h:''}</span>`;
 
@@ -1042,16 +1004,15 @@ function renderCard(g){
   const mvHtml=mv!==0?`<span class="osc-move ${mv<0?'move-up':'move-dn'}">${mv<0?'▲':'▼'}${Math.abs(mv)} from open</span>`:'';
 
   // Live score blocks
-  const awayScoreHtml=g.isLive?`<div class="live-score-box ${g.liveScore.a>g.liveScore.h?'live-score-leading':'live-score-trailing'}">${g.liveScore.a}</div>`:'';
-  const homeScoreHtml=g.isLive?`<div class="live-score-box ${g.liveScore.h>g.liveScore.a?'live-score-leading':'live-score-trailing'}">${g.liveScore.h}</div>`:'';
+  const awayScoreHtml='';
+  const homeScoreHtml='';
 
   // Odds strip — show theScore spread for both teams + total
   const homeSp=fmtSp(g.curSpread);
   const awaySp=fmtSp(-g.curSpread);
   const homeSpOdds=fmt(ts.homeSpreadOdds||-110);
   const awaySpOdds=fmt(ts.awaySpreadOdds||-110);
-  const liveSp=g.liveSpread??g.curSpread;
-  const liveSpHtml=g.isLive&&g.liveSpread!=null?`<span style="font-size:10px;color:var(--live-red);display:block;margin-top:2px;">LIVE ${fmtSp(liveSp)}</span>`:'';
+  const liveSpHtml='';
 
   // Rec conf bar color
   const confColor=rec.tier==='strong'?'var(--green)':rec.tier==='live'?'var(--live-red)':'var(--accent)';
@@ -1098,7 +1059,7 @@ function renderCard(g){
         <div class="rec-body">
           <div class="rec-tier-lbl ${rec.cls}">${rec.label}</div>
           <div class="rec-bet">${rec.betText}</div>
-          <div class="rec-odds">${fmt(rec.oddsVal)} theScore${liveSpHtml}</div>
+          <div class="rec-odds">${fmt(rec.oddsVal)} theScore</div>
           ${rec.reasons[0]?`<div class="rec-reason">${rec.reasons[0]}</div>`:''}
           ${rec.units>0?`<div class="rec-conf">
             <div class="conf-bar"><div class="conf-fill" style="width:${rec.conf}%;background:${confColor};"></div></div>
