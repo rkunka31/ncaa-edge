@@ -421,49 +421,14 @@ body {
     <div class="tool-title">Live +EV Spots</div>
     <div id="ev-list"><div class="loading"><div class="spinner"></div></div></div>
   </div>
-</div>
 
-<!-- ══ PAGE: PARLAY ══ -->
-<div id="page-parlay" class="page">
-  <div style="background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px;">
-    <div style="font-size:17px;font-weight:700;margin-bottom:4px;">🎯 Parlay Builder</div>
-    <div style="font-size:12px;color:var(--t3);line-height:1.5;">Add 2–4 legs from current games. App calculates combined odds, true EV, and flags bad legs that kill parlay value.</div>
-  </div>
-
-  <div style="background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px;">
-    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">Add a Leg</div>
-    <div class="form-row">
-      <label class="form-lbl">Game</label>
-      <select class="form-select" id="pl-game" onchange="updateParlayLegOdds()"></select>
-    </div>
-    <div class="form-2col">
-      <div class="form-row">
-        <label class="form-lbl">Bet Type</label>
-        <select class="form-select" id="pl-type" onchange="updateParlayLegOdds()">
-          <option value="home_spread">Home Spread</option>
-          <option value="away_spread">Away Spread</option>
-          <option value="home_ml">Home ML</option>
-          <option value="away_ml">Away ML</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <label class="form-lbl">Odds</label>
-        <input class="form-input" type="number" id="pl-odds" placeholder="-110" value="-110">
-      </div>
-    </div>
-    <button class="btn-primary" onclick="addParlayLeg()" style="margin-top:4px;">+ Add Leg</button>
-  </div>
-
-  <div id="parlay-legs" style="background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px;">
-    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Parlay Legs (0)</div>
-    <div id="parlay-legs-list" style="font-size:13px;color:var(--t4);">No legs added yet. Add 2–4 legs above.</div>
-  </div>
-
-  <div id="parlay-result" style="display:none;background:var(--card);padding:14px 16px;">
-    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">Parlay Analysis</div>
-    <div id="parlay-result-content"></div>
+  <div class="tool-card">
+    <div class="tool-title">Historical Stats — Today's Games</div>
+    <div class="tool-desc">Notable ATS trends, tournament records, and hot/cold streaks for every active game. 🔥 = covering at 58%+ rate. ❄️ = covering at 42% or less.</div>
+    <div id="stats-insights"><div style="font-size:13px;color:var(--t4);">Loading stats...</div></div>
   </div>
 </div>
+
 
 <!-- ══ PAGE: MY BETS ══ -->
 <div id="page-tracker" class="page">
@@ -562,35 +527,23 @@ body {
   </div>
 </div>
 
-<!-- ══ PAGE: PARLAY BUILDER ══ -->
-<div id="page-parlay" class="page">
-  <div style="padding:14px 16px 8px;border-bottom:1px solid var(--line);background:var(--card);">
-    <div style="font-size:17px;font-weight:700;margin-bottom:3px;">Parlay Builder</div>
-    <div style="font-size:12px;color:var(--t3);">Tap games below to add legs. App flags any negative-EV leg that hurts the parlay.</div>
+
+<!-- ══ PAGE: TODAY ══ -->
+<div id="page-today" class="page">
+  <div style="padding:14px 16px 8px;background:var(--card);border-bottom:1px solid var(--line);">
+    <div style="font-size:17px;font-weight:700;">Today's Games</div>
+    <div style="font-size:12px;color:var(--t3);margin-top:2px;">All games with tips today — sorted by start time</div>
   </div>
+  <div id="today-list"></div>
+</div>
 
-  <!-- Parlay summary strip -->
-  <div id="parlay-strip" style="background:var(--card);border-bottom:1px solid var(--line);padding:12px 16px;display:none;">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
-      <div style="text-align:center;"><div style="font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;" id="p-legs">0</div><div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;">Legs</div></div>
-      <div style="text-align:center;"><div style="font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);" id="p-odds">—</div><div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;">Parlay Odds</div></div>
-      <div style="text-align:center;"><div style="font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;" id="p-payout">—</div><div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;">Payout</div></div>
-      <div style="text-align:center;"><div style="font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;" id="p-ev">—</div><div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;">Combined EV</div></div>
-    </div>
-    <div id="p-stake-row" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-      <label style="font-size:12px;color:var(--t3);font-weight:600;flex-shrink:0;">Stake $</label>
-      <input type="number" id="p-stake" value="25" oninput="updateParlaySummary()" style="background:var(--card2);border:1px solid var(--line2);color:var(--t1);padding:8px 10px;border-radius:8px;font-size:14px;width:90px;outline:none;">
-      <div id="p-warning" style="font-size:11px;color:var(--red);flex:1;"></div>
-    </div>
-    <button onclick="clearParlay()" style="background:none;border:1px solid var(--line2);color:var(--t3);border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">Clear All</button>
+<!-- ══ PAGE: DOGS ══ -->
+<div id="page-dogs" class="page">
+  <div style="padding:14px 16px 8px;background:var(--card);border-bottom:1px solid var(--line);">
+    <div style="font-size:17px;font-weight:700;">🐶 Underdogs</div>
+    <div style="font-size:12px;color:var(--t3);margin-top:2px;">Teams getting fewer than 50% of public bets — sorted by ATS dog record</div>
   </div>
-
-  <!-- Selected legs -->
-  <div id="parlay-legs" style="background:var(--card);border-bottom:1px solid var(--line);"></div>
-
-  <!-- Game picker -->
-  <div style="padding:10px 16px 6px;font-size:11px;font-weight:800;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;background:var(--bg);">Add a Leg — Tap any bet below</div>
-  <div id="parlay-game-list"></div>
+  <div id="dogs-list"></div>
 </div>
 
 <!-- ── BOTTOM NAV ── -->
@@ -598,17 +551,17 @@ body {
   <button class="nav-item active" id="nav-picks" onclick="showPage('picks',this)">
     <span class="nav-icon">🏀</span>Picks
   </button>
-  <button class="nav-item" id="nav-parlay" onclick="showPage('parlay',this)">
-    <span class="nav-icon">🎯</span>Parlay
+  <button class="nav-item" id="nav-today" onclick="showPage('today',this)">
+    <span class="nav-icon">📅</span>Today
+  </button>
+  <button class="nav-item" id="nav-dogs" onclick="showPage('dogs',this)">
+    <span class="nav-icon">🐶</span>Dogs
   </button>
   <button class="nav-item" id="nav-tools" onclick="showPage('tools',this)">
-    <span class="nav-icon">🧮</span>Tools
+    <span class="nav-icon">📊</span>Stats
   </button>
   <button class="nav-item" id="nav-tracker" onclick="showPage('tracker',this)">
     <span class="nav-icon">📋</span>My Bets
-  </button>
-  <button class="nav-item" id="nav-parlay" onclick="showPage('parlay',this)">
-    <span class="nav-icon">🎰</span>Parlay
   </button>
   <button class="nav-item" id="nav-settings" onclick="showPage('settings',this)">
     <span class="nav-icon">⚙️</span>Settings
@@ -676,7 +629,7 @@ body {
 // ════════════════════════════════════════
 const SK = 'edge_v7';
 let state = {
-  bankroll:1000, unit:25, bets:[], games:[], parlay:[],
+  bankroll:1000, unit:25, bets:[], games:[],
   apiKey:'1b8e7af59dfb8b569038821160756c9d', defaultBook:'theScore Bet',
   kellyFraction:.5,
   weights:{rlm:25,steam:20,diverge:20,ev:20,model:15},
@@ -1321,33 +1274,6 @@ function buildScoreBreakdown(g, signals, score, conf){
 // ════════════════════════════════════════
 // FEATURE 5: BEST BET WIDGET
 // ════════════════════════════════════════
-function renderBestBetWidget(){
-  const el = document.getElementById('best-bet-content');
-  if(!el) return;
-  const active = state.games.filter(g => g.status !== 'done' && isInWindow(g));
-  if(!active.length){ el.innerHTML='<span style="color:#64748b;">No games in window</span>'; return; }
-  const best = [...active].sort((a,b)=>b.edgeScore-a.edgeScore)[0];
-  const rec = recommend(best);
-  if(rec.units === 0){ el.innerHTML='<span style="color:#64748b;">No strong edges right now</span>'; return; }
-  const moveArrow = best.spreadMove > 0.4 ? ' ↑' : best.spreadMove < -0.4 ? ' ↓' : '';
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;">#${best.awaySeed} ${best.away} vs #${best.homeSeed} ${best.home} · ${best.time} ET</div>
-        <div style="font-size:16px;font-weight:700;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rec.emoji} ${rec.betText}${moveArrow}</div>
-        <div style="font-size:12px;color:#94a3b8;margin-top:3px;">${fmt(rec.oddsVal)} · ${rec.label} · ${rec.conf.toFixed(0)}% conf</div>
-        <div style="font-size:11px;color:#64748b;margin-top:4px;line-height:1.4;">${rec.edgeSummary||rec.reasons[0]||''}</div>
-      </div>
-      <div style="text-align:right;flex-shrink:0;">
-        <div style="font-size:22px;font-weight:800;color:${rec.tier==='strong'?'#22c55e':'#38bdf8'};">$${rec.stake}</div>
-        <div style="font-size:10px;color:#64748b;margin-top:2px;">${rec.units}u · EDGE ${best.edgeScore}</div>
-        <button onclick="openBetModalForGame('${best.id}')" style="margin-top:6px;background:#1e40af;border:none;color:#93c5fd;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;">+ Track</button>
-      </div>
-    </div>`;
-}
-
-// ════════════════════════════════════════
-// FEATURE 3: PARLAY BUILDER
 // ════════════════════════════════════════
 
 function edgeClr(s){return s>=65?'var(--green)':s>=40?'var(--accent)':'var(--t4)';}
@@ -1356,179 +1282,7 @@ function edgeClr(s){return s>=65?'var(--green)':s>=40?'var(--accent)':'var(--t4)
 // ════════════════════════════════════════
 // FEATURE 5: Best Bet Snapshot hero card
 // ════════════════════════════════════════
-function renderHeroBet(games){
-  const el = document.getElementById('hero-bet');
-  if(!el) return;
-  const upcoming = games.filter(g => !hasStarted(g) && g.status !== 'done');
-  if(!upcoming.length){ el.style.display='none'; return; }
-
-  const best = upcoming.reduce((a,b) => recommend(b).score > recommend(a).score ? b : a, upcoming[0]);
-  const rec = recommend(best);
-  if(rec.units === 0){ el.style.display='none'; return; }
-
-  const lm = analyzeLineMove(best);
-  const topReason = rec.explanation.split('.')[0];
-
-  el.style.display = 'block';
-  el.innerHTML = `
-    <div style="background:linear-gradient(135deg,#0f1117 0%,#1e3a5f 100%);border-radius:12px;padding:16px;margin:12px 16px 4px;color:#fff;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:rgba(255,255,255,0.03);border-radius:0 12px 0 80px;"></div>
-      <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">⭐ Best Bet Right Now</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:4px;">#${best.awaySeed} ${best.away} vs #${best.homeSeed} ${best.home} · ${best.time} ET</div>
-      <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;line-height:1.1;">${rec.betText}</div>
-      <div style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:10px;">${fmt(rec.oddsVal)} theScore · ${rec.label}</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:12px;">${topReason}</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 14px;">
-          <div style="font-size:18px;font-weight:800;">$${rec.stake}</div>
-          <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px;">${rec.units} unit${rec.units>1?'s':''}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:12px;color:rgba(255,255,255,0.5);">EDGE Score</div>
-          <div style="font-size:24px;font-weight:800;color:${best.edgeScore>=50?'#4ade80':'#60a5fa'};">${best.edgeScore}</div>
-        </div>
-      </div>
-    </div>`;
-}
-
 // ════════════════════════════════════════
-// FEATURE 3: Parlay Builder functions
-// ════════════════════════════════════════
-function addToParlay(gameId){
-  const g = state.games.find(x => x.id===gameId);
-  if(!g) return;
-  const existing = state.parlay.findIndex(p => p.id===gameId);
-  if(existing > -1){
-    state.parlay.splice(existing, 1);
-  } else {
-    if(state.parlay.length >= 4){ alert('Max 4 legs. Remove one first.'); return; }
-    const rec = recommend(g);
-    state.parlay.push({
-      id: gameId,
-      matchup: `${g.away} vs ${g.home}`,
-      bet: rec.betText,
-      odds: rec.oddsVal,
-      ev: g.ev,
-      edgeScore: g.edgeScore,
-    });
-  }
-  saveState();
-  renderParlayTab();
-  // Update button text in card
-  const btn = document.getElementById('parlay-btn-'+gameId);
-  if(btn) btn.textContent = state.parlay.find(p=>p.id===gameId) ? '✓ In Parlay' : '+ Add to Parlay';
-  // Update nav badge
-  updateParlayBadge();
-}
-
-function updateParlayBadge(){
-  const badge = document.getElementById('parlay-badge');
-  if(badge){ badge.textContent = state.parlay.length || ''; badge.style.display = state.parlay.length ? 'inline' : 'none'; }
-}
-
-function renderParlayTab(){
-  const el = document.getElementById('parlay-content');
-  if(!el) return;
-  updateParlayBadge();
-
-  if(!state.parlay.length){
-    el.innerHTML = '<div class="empty" style="padding:40px 16px;text-align:center;color:var(--t4);">Tap "+ Add to Parlay" on any game card to build your parlay.</div>';
-    return;
-  }
-
-  // Calculate combined parlay odds
-  const decOdds = state.parlay.map(leg => a2d(leg.odds));
-  const combinedDec = decOdds.reduce((a,b) => a*b, 1);
-  const combinedAmerican = d2a(combinedDec);
-  const impliedWin = 1/combinedDec;
-  const stake = state.unit;
-  const toWin = parseFloat(((combinedDec-1)*stake).toFixed(2));
-
-  // EV check — parlay EV = product of individual EVs (simplified)
-  const hasNegEV = state.parlay.some(leg => leg.ev < 0);
-  const avgEdge = state.parlay.reduce((s,l)=>s+l.ev,0)/state.parlay.length;
-
-  const warnHtml = hasNegEV
-    ? `<div style="background:rgba(220,38,38,0.08);border:1.5px solid rgba(220,38,38,0.25);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#dc2626;font-weight:600;">⚠️ One or more legs has negative EV — this reduces overall parlay value significantly.</div>`
-    : avgEdge > 1
-    ? `<div style="background:rgba(22,163,74,0.08);border:1.5px solid rgba(22,163,74,0.25);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#16a34a;font-weight:600;">✓ All legs have positive EV — solid parlay construction.</div>`
-    : '';
-
-  const legsHtml = state.parlay.map((leg,i) => `
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);">
-      <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i+1}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:13px;font-weight:600;color:var(--t1);">${leg.bet}</div>
-        <div style="font-size:11px;color:var(--t3);">${leg.matchup}</div>
-      </div>
-      <div style="text-align:right;flex-shrink:0;">
-        <div style="font-size:13px;font-weight:700;color:${leg.ev>0?'var(--green)':'var(--red)'};">${fmt(leg.odds)}</div>
-        <div style="font-size:10px;color:var(--t4);">EV ${leg.ev>0?'+':''}${leg.ev}%</div>
-      </div>
-      <button onclick="addToParlay('${leg.id}')" style="background:none;border:none;color:var(--t4);font-size:18px;cursor:pointer;padding:0 4px;flex-shrink:0;">×</button>
-    </div>`).join('');
-
-  el.innerHTML = `
-    <div style="background:var(--card);border-bottom:1px solid var(--line);padding:16px;">
-      ${warnHtml}
-      <div style="font-size:11px;font-weight:800;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Your Legs (${state.parlay.length}/4)</div>
-      ${legsHtml}
-    </div>
-
-    <div style="background:var(--card);border-bottom:1px solid var(--line);padding:16px;">
-      <div style="font-size:11px;font-weight:800;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;">Parlay Summary</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-        <div style="background:var(--card2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:20px;font-weight:800;color:var(--t1);">${fmt(combinedAmerican)}</div>
-          <div style="font-size:10px;color:var(--t4);margin-top:2px;text-transform:uppercase;letter-spacing:.4px;">Combined Odds</div>
-        </div>
-        <div style="background:var(--card2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:20px;font-weight:800;color:var(--t1);">${(impliedWin*100).toFixed(1)}%</div>
-          <div style="font-size:10px;color:var(--t4);margin-top:2px;text-transform:uppercase;letter-spacing:.4px;">Win Probability</div>
-        </div>
-        <div style="background:var(--card2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:20px;font-weight:800;color:var(--green);">$${toWin}</div>
-          <div style="font-size:10px;color:var(--t4);margin-top:2px;text-transform:uppercase;letter-spacing:.4px;">To Win on $${stake}</div>
-        </div>
-        <div style="background:var(--card2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:20px;font-weight:800;color:${avgEdge>0?'var(--green)':'var(--red)'};">${avgEdge>0?'+':''}${avgEdge.toFixed(1)}%</div>
-          <div style="font-size:10px;color:var(--t4);margin-top:2px;text-transform:uppercase;letter-spacing:.4px;">Avg Leg EV</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button onclick="trackParlay()" style="flex:2;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;">Track This Parlay</button>
-        <button onclick="clearParlay()" style="flex:1;background:var(--card2);border:1px solid var(--line2);color:var(--t3);border-radius:10px;padding:13px;font-size:13px;cursor:pointer;">Clear</button>
-      </div>
-    </div>`;
-}
-
-function clearParlay(){
-  if(state.parlay.length && !confirm('Clear all parlay legs?')) return;
-  state.parlay = [];
-  saveState();
-  renderParlayTab();
-  updateParlayBadge();
-}
-
-function trackParlay(){
-  if(!state.parlay.length) return;
-  const legs = state.parlay.map(l=>l.bet).join(' + ');
-  const decOdds = state.parlay.map(leg => a2d(leg.odds));
-  const combinedDec = decOdds.reduce((a,b)=>a*b,1);
-  const combinedAmerican = d2a(combinedDec);
-  state.bets.push({
-    id: Date.now(), gameId: null,
-    date: new Date().toISOString().split('T')[0],
-    matchup: `${state.parlay.length}-leg parlay`,
-    bet: legs, book: state.defaultBook||'theScore Bet',
-    type: 'Parlay', odds: combinedAmerican,
-    stake: state.unit, toWin: parseFloat(((combinedDec-1)*state.unit).toFixed(2)),
-    outcome: 'pending', notes: 'Added from Parlay Builder', closingOdds: null,
-  });
-  saveState();
-  alert('Parlay tracked! View in My Bets.');
-}
-
 function renderPicks(){
   updateKPIs();
   // Show/hide no-key banner
@@ -1656,7 +1410,6 @@ function renderCard(g){
     <div style="padding:10px 14px 12px;display:flex;gap:7px;${rec.tier==='none'?'border-top:1px solid var(--line);margin-top:6px;':''}">
       ${rec.tier !== 'none' ? `
       <button onclick="openBetModalForGame('${g.id}')" style="flex:2;background:${hdrColor};color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">${tracked?'✓ Tracked':'+ Track Bet'}</button>
-      <button onclick="addParlayLeg('${g.id}','${rec.betOn}')" style="flex:1;background:var(--card2);border:1px solid var(--line2);color:var(--t2);border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">+ Parlay</button>
       ` : ''}
       <button onclick="toggleDetail('${g.id}')" id="exp-${g.id}" style="flex:1;background:var(--card2);border:1px solid var(--line2);color:var(--t3);border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer;">Details ⌄</button>
     </div>
@@ -2013,6 +1766,252 @@ function clearAllBets(){if(!confirm('Delete ALL bets? Cannot be undone.'))return
 function resetApp(){if(!confirm('Reset everything?'))return;localStorage.removeItem(SK);location.reload();}
 
 // ════════════════════════════════════════
+// TODAY TAB — all games sorted by tip time
+// ════════════════════════════════════════
+function renderToday(){
+  const el = document.getElementById('today-list');
+  if(!el) return;
+
+  const games = [...state.games]
+    .filter(g => g.status === 'today' || g.status === 'tmrw')
+    .sort((a,b) => {
+      // Sort by date first, then tip time
+      const dateOrder = {today:0, tmrw:1};
+      if(dateOrder[a.status] !== dateOrder[b.status])
+        return dateOrder[a.status] - dateOrder[b.status];
+      const ta = parseGameTime(a.time, a.date);
+      const tb = parseGameTime(b.time, b.date);
+      if(ta && tb) return ta - tb;
+      return 0;
+    });
+
+  if(!games.length){ el.innerHTML='<div style="padding:40px 16px;text-align:center;color:var(--t4);font-size:14px;">No games today.</div>'; return; }
+
+  // Group by date
+  const grouped = {};
+  games.forEach(g => {
+    const key = g.status === 'today' ? 'Today — Fri Mar 20' : 'Tomorrow — Sat Mar 21';
+    if(!grouped[key]) grouped[key] = [];
+    grouped[key].push(g);
+  });
+
+  let html = '';
+  Object.entries(grouped).forEach(([label, gs]) => {
+    html += `<div style="padding:10px 16px 4px;font-size:11px;font-weight:800;color:var(--t4);letter-spacing:.8px;text-transform:uppercase;background:var(--bg);">${label}</div>`;
+    gs.forEach(g => {
+      const rec = recommend(g);
+      const ats = getATS(g.home);
+      const awayAts = getATS(g.away);
+      const homeIsFav = g.curSpread < 0;
+      const hdrColor = rec.tier==='strong' ? '#16a34a' : rec.tier==='lean' ? '#0070f3' : '#9ca3af';
+      const started = hasStarted(g);
+      const statusDot = started ? '<span style="display:inline-block;width:7px;height:7px;background:#dc2626;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>' : '';
+
+      html += `<div style="background:var(--card);border-bottom:1px solid var(--line);padding:12px 16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-size:12px;color:var(--t3);">${statusDot}${g.time} ET · ${g.tv} · ${g.round}</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            ${rec.tier !== 'none' ? `<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;background:${hdrColor}18;color:${hdrColor};border:1px solid ${hdrColor}33;">${rec.emoji} ${rec.label}</span>` : ''}
+            <span style="font-size:11px;color:var(--t4);">EDGE ${g.edgeScore}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:700;color:var(--t1);">#${g.awaySeed} ${g.away}</div>
+            ${awayAts ? `<div style="font-size:11px;color:var(--t3);margin-top:1px;">${homeIsFav ? `${awayAts.dogW}-${awayAts.dogL} ATS as dog` : `${awayAts.favW}-${awayAts.favL} ATS as fav`} · ${awayAts.tourW}-${awayAts.tourL} tourney</div>` : ''}
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--t3);flex-shrink:0;">${fmtSp(-g.curSpread)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:${rec.tier!=='none'?'8':'0'}px;padding-top:6px;border-top:1px solid var(--line);">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:700;color:var(--t1);">#${g.homeSeed} ${g.home}</div>
+            ${ats ? `<div style="font-size:11px;color:var(--t3);margin-top:1px;">${homeIsFav ? `${ats.favW}-${ats.favL} ATS as fav` : `${ats.dogW}-${ats.dogL} ATS as dog`} · ${ats.tourW}-${ats.tourL} tourney</div>` : ''}
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--t3);flex-shrink:0;">${fmtSp(g.curSpread)}</div>
+        </div>
+        ${rec.tier !== 'none' ? `<div style="padding:8px 10px;background:var(--card2);border-radius:7px;border-left:3px solid ${hdrColor};font-size:12px;color:var(--t2);">${rec.betText} ${fmt(rec.oddsVal)} · <strong>$${rec.stake}</strong> · ${rec.explanation||rec.edgeSummary}</div>` : ''}
+      </div>`;
+    });
+  });
+
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════
+// DOGS TAB — underdogs sorted by ATS dog record
+// ════════════════════════════════════════
+function renderDogs(){
+  const el = document.getElementById('dogs-list');
+  if(!el) return;
+
+  // Get all active games where we can identify the underdog
+  const underdog_games = state.games
+    .filter(g => g.status !== 'done' && isInWindow(g))
+    .map(g => {
+      const dogTeam  = g.curSpread > 0 ? g.home : g.away;  // positive spread = dog
+      const favTeam  = g.curSpread < 0 ? g.home : g.away;
+      const dogSeed  = g.curSpread > 0 ? g.homeSeed : g.awaySeed;
+      const favSeed  = g.curSpread < 0 ? g.homeSeed : g.awaySeed;
+      const dogSpread = g.curSpread > 0 ? g.curSpread : -g.curSpread;  // always positive
+      const ats = getATS(dogTeam);
+      const dogPct = ats && (ats.dogW+ats.dogL) > 0
+        ? Math.round(ats.dogW/(ats.dogW+ats.dogL)*100) : 50;
+      return { g, dogTeam, favTeam, dogSeed, favSeed, dogSpread, ats, dogPct };
+    })
+    .filter(x => x.dogSpread > 0) // only genuine dogs
+    .sort((a,b) => b.dogPct - a.dogPct); // best ATS dog record first
+
+  if(!underdog_games.length){
+    el.innerHTML='<div style="padding:40px 16px;text-align:center;color:var(--t4);font-size:14px;">No underdog games in window.</div>';
+    return;
+  }
+
+  const html = underdog_games.map(({g, dogTeam, favTeam, dogSeed, favSeed, dogSpread, ats, dogPct}) => {
+    const rec = recommend(g);
+    // Is the rec on the dog?
+    const recOnDog = rec.betOn === 'away_spread' ? g.curSpread < 0 : g.curSpread > 0;
+    const atsBadgeColor = dogPct >= 58 ? '#16a34a' : dogPct <= 42 ? '#dc2626' : '#6b7280';
+    const tracked = state.bets.some(b => b.gameId === g.id);
+
+    return `<div style="background:var(--card);border-radius:12px;margin:10px 14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07);border:1.5px solid ${recOnDog && rec.tier!=='none' ? '#0070f333' : 'var(--line)'};">
+
+      <!-- Header -->
+      <div style="background:${recOnDog && rec.tier!=='none' ? '#0070f3' : '#6b7280'};padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;font-weight:800;color:#fff;letter-spacing:.4px;text-transform:uppercase;">${recOnDog && rec.tier!=='none' ? rec.emoji+' '+rec.label : '➖ No Edge on Dog'}</span>
+        <span style="font-size:11px;color:rgba(255,255,255,.75);">${g.time} ET · ${g.tv}</span>
+      </div>
+
+      <div style="padding:12px 14px;">
+        <!-- Matchup summary -->
+        <div style="font-size:12px;color:var(--t3);margin-bottom:8px;">${g.round} · ${g.region}</div>
+
+        <!-- Dog team highlighted -->
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:9px;margin-bottom:8px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#166534;letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px;">🐶 Underdog</div>
+            <div style="font-size:17px;font-weight:800;color:var(--t1);">#${dogSeed} ${dogTeam}</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px;">+${dogSpread} · ${fmt(g.curSpread > 0 ? (g.books.thescore?.homeSpreadOdds ?? -110) : (g.books.thescore?.awaySpreadOdds ?? -110))}</div>
+          </div>
+          ${ats ? `<div style="text-align:right;">
+            <div style="font-size:20px;font-weight:800;color:${atsBadgeColor};">${ats.dogW}-${ats.dogL}</div>
+            <div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.3px;">ATS as Dog</div>
+            <div style="font-size:11px;color:${atsBadgeColor};font-weight:600;margin-top:1px;">${dogPct}% cover</div>
+          </div>` : ''}
+        </div>
+
+        <!-- Favorite -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);margin-bottom:8px;">
+          <div>
+            <div style="font-size:12px;color:var(--t3);margin-bottom:1px;">Favorite</div>
+            <div style="font-size:14px;font-weight:700;color:var(--t1);">#${favSeed} ${favTeam} (${fmtSp(g.curSpread < 0 ? g.curSpread : -g.curSpread)})</div>
+          </div>
+          ${(() => {
+            const favATS = getATS(favTeam);
+            const homeIsFav = g.curSpread < 0;
+            if(!favATS) return '';
+            const fw = homeIsFav ? favATS.favW : favATS.dogW;
+            const fl = homeIsFav ? favATS.favL : favATS.dogL;
+            const fpct = fw+fl>0 ? Math.round(fw/(fw+fl)*100) : 50;
+            const fc = fpct>=55?'#16a34a':fpct<=45?'#dc2626':'#6b7280';
+            return `<div style="text-align:right;"><div style="font-size:14px;font-weight:700;color:${fc};">${fw}-${fl} ATS</div><div style="font-size:10px;color:var(--t3);">as fav · ${fpct}%</div></div>`;
+          })()}
+        </div>
+
+        <!-- ATS trend -->
+        ${ats && ats.trend ? `<div style="font-size:12px;color:var(--t2);line-height:1.5;padding:8px 10px;background:var(--card2);border-radius:7px;margin-bottom:8px;">${ats.trend}</div>` : ''}
+
+        <!-- Rec if on dog -->
+        ${recOnDog && rec.tier !== 'none' ? `<div style="font-size:13px;color:var(--t2);padding:8px 10px;background:var(--card2);border-radius:7px;border-left:3px solid #0070f3;margin-bottom:10px;">${rec.explanation || rec.edgeSummary}</div>` : ''}
+      </div>
+
+      <!-- Action -->
+      <div style="padding:0 14px 12px;">
+        <button onclick="openBetModalForGame('${g.id}')" style="width:100%;background:${recOnDog && rec.tier!=='none' ? '#0070f3' : 'var(--card2)'};color:${recOnDog && rec.tier!=='none' ? '#fff' : 'var(--t2)'};border:${recOnDog && rec.tier!=='none' ? 'none' : '1px solid var(--line2)'};border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">${tracked ? '✓ Tracked' : (recOnDog && rec.tier!=='none' ? '+ Track This Bet' : '+ Track Bet')}</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════
+// STATS TAB — historical context for today's games
+// Replaces the old Tools tab
+// ════════════════════════════════════════
+function renderStats(){
+  const toolsEl = document.getElementById('page-tools');
+  if(!toolsEl) return;
+
+  // Get active games
+  const activeGames = state.games.filter(g => isInWindow(g) && g.status !== 'done');
+  if(!activeGames.length) return;
+
+  // Build the stats section inside the tools page
+  const statsContainer = document.getElementById('stats-insights');
+  if(!statsContainer) return;
+
+  // For each game, generate the most relevant historical insight
+  // Priority order: (1) strong ATS trend as current role, (2) tournament record, (3) divergence note
+  const insights = activeGames.map(g => {
+    const homeIsFav = g.curSpread < 0;
+    const hATS = getATS(g.home);
+    const aATS = getATS(g.away);
+    const findings = [];
+
+    // Check each team's ATS record in their current role
+    [[g.home, hATS, homeIsFav],[g.away, aATS, !homeIsFav]].forEach(([name, ats, isFav]) => {
+      if(!ats) return;
+      const w = isFav ? ats.favW : ats.dogW;
+      const l = isFav ? ats.favL : ats.dogL;
+      const total = w + l;
+      if(total < 5) return;
+      const pct = Math.round(w/total*100);
+
+      // Flag notable records (>58% or <42%)
+      if(pct >= 58){
+        findings.push({ type:'hot', team:name, stat:`${w}-${l} ATS as ${isFav?'favorite':'underdog'} (${pct}%)`, note:ats.trend, strength: pct-50 });
+      } else if(pct <= 42){
+        findings.push({ type:'cold', team:name, stat:`${w}-${l} ATS as ${isFav?'favorite':'underdog'} (${pct}%)`, note:ats.trend, strength: 50-pct });
+      }
+
+      // Tournament-specific record if notable
+      const tourTotal = ats.tourW + ats.tourL;
+      if(tourTotal >= 3){
+        const tourPct = Math.round(ats.tourW/tourTotal*100);
+        if(tourPct >= 60 || tourPct <= 40){
+          findings.push({ type: tourPct>=60?'hot':'cold', team:name, stat:`${ats.tourW}-${ats.tourL} ATS in NCAA tournament`, note: tourPct>=60?'Covers consistently in March':'Struggles to cover in March tournament play', strength: Math.abs(tourPct-50) });
+        }
+      }
+    });
+
+    // Sort by strength, take top 2
+    findings.sort((a,b) => b.strength-a.strength);
+    return { g, findings: findings.slice(0,2) };
+  }).filter(x => x.findings.length > 0);
+
+  if(!insights.length){
+    statsContainer.innerHTML = '<div style="font-size:13px;color:var(--t4);padding:12px 0;">No significant historical trends for today\'s games.</div>';
+    return;
+  }
+
+  statsContainer.innerHTML = insights.map(({g, findings}) => `
+    <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);">
+      <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:8px;">#${g.awaySeed} ${g.away} vs #${g.homeSeed} ${g.home} · ${g.time} ET</div>
+      ${findings.map(f => `
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:7px;">
+          <div style="width:28px;height:28px;border-radius:7px;background:${f.type==='hot'?'#f0fdf4':'#fef2f2'};border:1px solid ${f.type==='hot'?'#86efac':'#fca5a5'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;">${f.type==='hot'?'🔥':'❄️'}</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:${f.type==='hot'?'#16a34a':'#dc2626'};">${f.team}: ${f.stat}</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px;line-height:1.4;">${f.note}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+
+// ════════════════════════════════════════
 // NAV
 // ════════════════════════════════════════
 function showPage(id,btn){
@@ -2020,10 +2019,11 @@ function showPage(id,btn){
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
-  if(id==='settings')loadSettingsUI();
-  if(id==='tracker')renderTracker();
-  if(id==='tools')renderEVList();
-  if(id==='parlay')renderParlayPage();
+  if(id==='settings') loadSettingsUI();
+  if(id==='tracker')  renderTracker();
+  if(id==='tools')  { renderEVList(); renderStats(); }
+  if(id==='today')    renderToday();
+  if(id==='dogs')     renderDogs();
 }
 
 // ════════════════════════════════════════
@@ -2041,6 +2041,8 @@ async function refreshAll(force){
   }
 
   renderPicks(); renderBestBet(); updateKPIs();
+  if(document.getElementById('page-today').classList.contains('active')) renderToday();
+  if(document.getElementById('page-dogs').classList.contains('active'))  renderDogs();
   if(document.getElementById('page-tools').classList.contains('active')) renderEVList();
   if(lbl){
     const t = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
@@ -2074,134 +2076,13 @@ function renderBestBet(){
       <div style="font-size:12px;color:var(--t3);line-height:1.5;padding:8px 10px;background:var(--card2);border-radius:7px;">${rec.edgeSummary||rec.edgeSummary||'Model edge identified'}</div>
       <div style="display:flex;gap:6px;margin-top:10px;">
         <button onclick="openBetModalForGame('${g.id}')" style="flex:1;background:${confColor};color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">+ Track This Bet</button>
-        <button onclick="addParlayLeg('${g.id}','${rec.betOn}')" style="background:var(--card2);border:1px solid var(--line2);color:var(--t2);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;">+ Parlay</button>
+        
       </div>
     </div>
   </div>`;
 }
 
 // ════════════════════════════════════════
-// FEATURE 3: PARLAY BUILDER
-// ════════════════════════════════════════
-let parlayLegs = []; // [{gameId, betOn, betText, odds, ev}]
-
-function renderParlayPage(){
-  renderParlayGameList();
-  renderParlayLegs();
-  updateParlaySummary();
-}
-
-function renderParlayGameList(){
-  const el = document.getElementById('parlay-game-list');
-  if(!el) return;
-  const pool = state.games.filter(g => g.status !== 'done' && isInWindow(g));
-  if(!pool.length){ el.innerHTML='<div style="padding:20px 16px;text-align:center;color:var(--t4);font-size:13px;">No upcoming games in window</div>'; return; }
-  el.innerHTML = pool.sort((a,b)=>b.edgeScore-a.edgeScore).map(g => {
-    const rec = recommend(g);
-    const ts = g.books.thescore || {};
-    const legs = [
-      { key:'home_spread', label:`${g.home} ${fmtSp(g.curSpread)}`, odds: ts.homeSpreadOdds||-110 },
-      { key:'away_spread', label:`${g.away} ${fmtSp(-g.curSpread)}`, odds: ts.awaySpreadOdds||-110 },
-      { key:'over',        label:`Over ${g.curTotal}`,               odds: ts.overOdds||-110 },
-      { key:'under',       label:`Under ${g.curTotal}`,              odds: ts.underOdds||-110 },
-    ];
-    return `<div style="background:var(--card);border-bottom:1px solid var(--line);padding:12px 16px;">
-      <div style="font-size:12px;color:var(--t3);margin-bottom:8px;">#${g.awaySeed} ${g.away} vs #${g.homeSeed} ${g.home} · ${g.time} ET · EDGE ${g.edgeScore}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-        ${legs.map(leg => {
-          const alreadyAdded = parlayLegs.some(l => l.gameId===g.id && l.betOn===leg.key);
-          const legEV = g.ev || 0;
-          const isNegEV = legEV < -2;
-          return `<button onclick="toggleParlayLeg('${g.id}','${leg.key}','${leg.label}',${leg.odds},${legEV.toFixed(1)})"
-            style="background:${alreadyAdded?'var(--accent)':'var(--card2)'};color:${alreadyAdded?'#fff':'var(--t1)'};border:1.5px solid ${alreadyAdded?'var(--accent)':isNegEV?'rgba(220,38,38,.3)':'var(--line2)'};border-radius:8px;padding:9px 10px;font-size:13px;font-weight:600;cursor:pointer;text-align:left;">
-            <div>${leg.label}</div>
-            <div style="font-size:11px;color:${alreadyAdded?'rgba(255,255,255,.8)':isNegEV?'var(--red)':'var(--t3)'};">${fmt(leg.odds)} ${isNegEV?'⚠ Neg EV':''}</div>
-          </button>`;
-        }).join('')}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function toggleParlayLeg(gameId, betOn, betText, odds, ev){
-  const idx = parlayLegs.findIndex(l => l.gameId===gameId && l.betOn===betOn);
-  if(idx > -1){
-    parlayLegs.splice(idx, 1);
-  } else {
-    // Can't have two legs from same game
-    parlayLegs = parlayLegs.filter(l => l.gameId !== gameId);
-    if(parlayLegs.length >= 4){ alert('Max 4 legs per parlay.'); return; }
-    parlayLegs.push({gameId, betOn, betText, odds, ev});
-  }
-  renderParlayLegs();
-  renderParlayGameList();
-  updateParlaySummary();
-}
-
-function addParlayLeg(gameId, betOn){
-  const g = state.games.find(x => x.id===gameId);
-  if(!g) return;
-  const rec = recommend(g);
-  const ts = g.books.thescore||{};
-  let betText=rec.betText, odds=rec.oddsVal, ev=g.ev||0;
-  toggleParlayLeg(gameId, betOn, betText, odds, ev);
-  showPage('parlay', document.getElementById('nav-parlay'));
-}
-
-function renderParlayLegs(){
-  const el = document.getElementById('parlay-legs');
-  if(!el) return;
-  if(!parlayLegs.length){ el.innerHTML=''; return; }
-  el.innerHTML = `<div style="padding:8px 16px 4px;font-size:11px;font-weight:800;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;">Selected Legs</div>` +
-    parlayLegs.map((leg,i) => {
-      const g = state.games.find(x=>x.id===leg.gameId);
-      const negEV = leg.ev < -2;
-      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--line);background:var(--card);">
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:700;">${leg.betText}</div>
-          <div style="font-size:11px;color:var(--t3);">${g ? '#'+g.awaySeed+' '+g.away+' vs '+g.home : ''} · ${fmt(leg.odds)}</div>
-          ${negEV ? '<div style="font-size:11px;color:var(--red);margin-top:2px;">⚠ Negative EV — weakens parlay</div>' : ''}
-        </div>
-        <button onclick="toggleParlayLeg('${leg.gameId}','${leg.betOn}','${leg.betText}',${leg.odds},${leg.ev})" style="background:none;border:none;color:var(--t4);font-size:20px;cursor:pointer;">×</button>
-      </div>`;
-    }).join('');
-}
-
-function updateParlaySummary(){
-  const strip = document.getElementById('parlay-strip');
-  if(!strip) return;
-  if(!parlayLegs.length){ strip.style.display='none'; return; }
-  strip.style.display='block';
-
-  // Calculate combined decimal odds
-  const combinedDec = parlayLegs.reduce((acc, leg) => acc * a2d(leg.odds), 1);
-  const combinedAmerican = d2a(combinedDec);
-  const stake = parseFloat(document.getElementById('p-stake')?.value||25);
-  const payout = ((combinedDec - 1) * stake).toFixed(0);
-
-  // Combined EV — sum of individual EVs (rough estimate)
-  const combinedEV = parlayLegs.reduce((acc, leg) => acc + (leg.ev||0), 0).toFixed(1);
-  const hasNegEV = parlayLegs.some(l => l.ev < -2);
-
-  const legsEl = document.getElementById('p-legs');
-  const oddsEl = document.getElementById('p-odds');
-  const payoutEl = document.getElementById('p-payout');
-  const evEl = document.getElementById('p-ev');
-  const warnEl = document.getElementById('p-warning');
-
-  if(legsEl) legsEl.textContent = parlayLegs.length;
-  if(oddsEl){ oddsEl.textContent = fmt(combinedAmerican); oddsEl.style.color = 'var(--accent)'; }
-  if(payoutEl) payoutEl.textContent = '+$'+payout;
-  if(evEl){ evEl.textContent = (parseFloat(combinedEV)>0?'+':'')+combinedEV+'%'; evEl.style.color = parseFloat(combinedEV)>0?'var(--green)':'var(--red)'; }
-  if(warnEl) warnEl.textContent = hasNegEV ? '⚠ One or more legs have negative EV — consider removing' : '';
-}
-
-function clearParlay(){
-  parlayLegs=[];
-  renderParlayLegs();
-  renderParlayGameList();
-  updateParlaySummary();
-}
 
 
 // ════════════════════════════════════════
