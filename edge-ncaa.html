@@ -129,175 +129,84 @@ body {
 .pill.live-pill.on { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.5); }
 
 /* ── REC CARD — PRIMARY UI ── */
-.rec-card {
-  background: var(--card);
-  border-bottom: 1px solid var(--line);
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-.rec-card:active { background: var(--card2); }
+
 
 /* Coloured left stripe by tier */
-.rec-card.tier-strong { border-left: 4px solid var(--green); }
-.rec-card.tier-lean   { border-left: 4px solid var(--accent); }
-.rec-card.tier-live   { border-left: 4px solid var(--live-red); }
-.rec-card.tier-none   { border-left: 4px solid var(--line2); }
+
+
+
+
 
 /* Game meta row — time, round, TV */
-.rc-meta {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  padding: 10px 14px 0;
-}
-.rc-badge {
-  font-size: 10px; font-weight: 800; letter-spacing: .4px;
-  padding: 2px 8px; border-radius: 4px;
-}
-.badge-live   { background: rgba(220,38,38,0.1); color: var(--live-red); }
-.badge-today  { background: rgba(0,112,243,0.08); color: var(--accent); }
-.badge-tmrw   { background: rgba(0,112,243,0.08); color: var(--blue); }
-.badge-done   { background: rgba(80,88,104,.15); color: var(--t4); }
-.rc-meta-txt  { font-size: 11px; color: var(--t3); font-weight: 500; }
-.rc-signal {
-  font-size: 10px; font-weight: 800; letter-spacing: .3px;
-  padding: 2px 7px; border-radius: 4px; margin-left: auto;
-}
-.sig-rlm   { background: rgba(217,119,6,0.1); color: var(--yellow); }
-.sig-steam { background: rgba(220,38,38,0.1);  color: var(--red); }
-.sig-ev    { background: rgba(46,204,113,.15); color: var(--green); }
-.sig-fade  { background: rgba(124,58,237,0.1); color: var(--purple); }
-.sig-sharp { background: rgba(74,168,255,.15); color: var(--blue); }
-.sig-live  { background: rgba(220,38,38,0.08);  color: var(--live-red); }
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* MATCHUP — the most important section, needs to be crystal clear */
-.rc-matchup {
-  padding: 10px 14px 8px;
-  display: flex; align-items: stretch; gap: 0;
-}
-.team-block {
-  flex: 1; display: flex; align-items: center; gap: 10px;
-}
-.team-block.away { flex-direction: row; }
-.team-block.home { flex-direction: row; }
-.seed-box {
-  width: 22px; flex-shrink: 0;
-  font-size: 11px; font-weight: 700; color: var(--t3);
-  text-align: right;
-}
-.team-abbr-box {
-  width: 38px; height: 38px; flex-shrink: 0;
-  background: var(--card2); border: 1px solid var(--line2);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--t2);
-  letter-spacing: .3px;
-}
-.team-info { min-width: 0; }
-.team-name {
-  font-size: 16px;           /* big, legible */
-  font-weight: 700;
-  color: var(--t1);          /* pure white */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.team-record { font-size: 11px; color: var(--t3); margin-top: 1px; }
 
-/* VS divider */
-.vs-divider {
-  flex-shrink: 0; width: 28px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--t4);
-}
+
+
+
+
+
 
 /* Live score */
-.live-score-box {
-  flex-shrink: 0; margin-left: 8px;
-  font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums;
-  min-width: 28px; text-align: center; line-height: 38px;
-}
-.live-score-leading { color: var(--t1); }
-.live-score-trailing { color: var(--t4); }
+
+
 
 /* ── RECOMMENDATION BOX ── */
-.rc-rec {
-  margin: 0 14px 12px;
-  border-radius: 10px; overflow: hidden;
-}
-.rc-rec.strong { border: 1.5px solid var(--green);  background: rgba(22,163,74,0.07); }
-.rc-rec.lean   { border: 1.5px solid var(--accent); background: rgba(0,112,243,0.05); }
-.rc-rec.live   { border: 1.5px solid var(--live-red); background: rgba(255,59,59,.07); }
-.rc-rec.none   { border: 1.5px solid var(--line2);  background: transparent; }
 
-.rc-rec-inner  { display: flex; align-items: center; gap: 10px; padding: 12px; }
-.rec-emoji     { font-size: 22px; flex-shrink: 0; }
+
+
+
+
+
+
 .rec-body      { flex: 1; min-width: 0; }
-.rec-tier-lbl  { font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+
 .rec-tier-lbl.strong { color: var(--green); }
 .rec-tier-lbl.lean   { color: var(--accent); }
 .rec-tier-lbl.live   { color: var(--live-red); }
 .rec-tier-lbl.none   { color: var(--t4); }
-.rec-bet {
-  font-size: 16px; font-weight: 700; color: var(--t1);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rec-odds { font-size: 12px; color: var(--t3); font-weight: 500; }
-.rec-reason { font-size: 12px; color: var(--t2); line-height: 1.45; margin-top: 4px; }
-.rec-right { text-align: right; flex-shrink: 0; }
-.rec-dollar { font-size: 20px; font-weight: 800; color: var(--t1); line-height: 1; font-variant-numeric: tabular-nums; }
-.rec-units  { font-size: 11px; color: var(--t3); margin-top: 2px; }
+
+
+
 .rec-conf   { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
 .conf-bar   { flex: 1; height: 3px; background: var(--line2); border-radius: 2px; overflow: hidden; }
 .conf-fill  { height: 100%; border-radius: 2px; }
 .conf-pct   { font-size: 10px; color: var(--t3); font-variant-numeric: tabular-nums; min-width: 28px; text-align: right; }
 
 /* ── ODDS STRIP ── */
-.rc-odds-strip {
-  display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr;
-  border-top: 1px solid var(--line); margin: 0 14px;
-  border-radius: 8px; overflow: hidden;
-  background: var(--card2); margin-bottom: 12px;
-}
-.odds-strip-div { background: var(--line); }
-.odds-strip-cell {
-  padding: 10px 8px; text-align: center; cursor: pointer;
-}
-.odds-strip-cell:active { background: rgba(255,255,255,.04); }
+
+
 .odds-strip-cell.best-odds { background: rgba(22,163,74,0.08); }
 .odds-strip-cell.rec-odds-cell { background: rgba(0,212,170,.1); }
-.osc-label { font-size: 9px; font-weight: 700; color: var(--t4); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
-.osc-main  { font-size: 15px; font-weight: 700; color: var(--t1); font-variant-numeric: tabular-nums; line-height: 1; }
-.osc-juice { font-size: 12px; color: var(--blue); margin-top: 2px; font-variant-numeric: tabular-nums; }
-.osc-move  { font-size: 10px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+
 .move-up { color: var(--green); }
 .move-dn { color: var(--red); }
 
 /* ── EXPAND ROW ── */
-.rc-expand-btn {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px;
-  border-top: 1px solid var(--line);
-  font-size: 12px; color: var(--t3); cursor: pointer;
-}
-.rc-expand-btn .chevron { font-size: 14px; transition: transform .2s; }
+
 .rc-expand-btn.open .chevron { transform: rotate(180deg); }
 
 /* ── DETAIL PANEL ── */
-.rc-detail { display: none; border-top: 1px solid var(--line); }
-.rc-detail.open { display: block; }
 
-.detail-metrics {
-  display: grid; grid-template-columns: repeat(3,1fr);
-  gap: 1px; background: var(--line); border-bottom: 1px solid var(--line);
-}
-.dm-cell { background: var(--card); padding: 10px 10px; text-align: center; }
-.dm-val { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
-.dm-lbl { font-size: 9px; font-weight: 700; color: var(--t4); letter-spacing: .4px; text-transform: uppercase; margin-top: 3px; }
 
-.money-bar-wrap { padding: 12px 14px 0; }
-.money-bar-labels { display: flex; justify-content: space-between; margin-bottom: 5px; }
-.money-bar-label { font-size: 11px; font-weight: 600; }
-.money-bar-track { height: 6px; background: var(--line2); border-radius: 3px; overflow: hidden; display: flex; }
+
+
+
+
+
 .money-bar-home  { background: var(--accent); height: 100%; border-radius: 3px 0 0 3px; }
 .money-bar-away  { background: var(--card2); flex: 1; }
 
@@ -1589,240 +1498,159 @@ function renderPicks(){
 function renderCard(g){
   const rec = recommend(g);
   const ts = g.books.thescore || {};
-  const tracked = state.bets.some(b => b.gameId===g.id);
+  const tracked = state.bets.some(b => b.gameId === g.id);
   const started = hasStarted(g);
-  const lm = analyzeLineMove(g);
   const homeATS = getATS(g.home);
   const awayATS = getATS(g.away);
+  const homeIsFav = g.curSpread < 0;
+  const lmAbs = Math.abs(g.spreadMove || 0);
 
-  // ── Status badge ──
-  let badge = '';
-  if(started && g.status==='today') badge=`<span class="rc-badge badge-live" style="background:rgba(220,38,38,0.1);color:#dc2626;border-color:rgba(220,38,38,0.3);">🔴 IN PROGRESS</span>`;
-  else if(g.status==='today') badge=`<span class="rc-badge badge-today">TODAY</span>`;
-  else if(g.status==='tmrw')  badge=`<span class="rc-badge badge-tmrw">SAT 3/21</span>`;
-  else if(g.status==='done')  badge=`<span class="rc-badge badge-done">FINAL ${g.fin ? g.fin.a+' – '+g.fin.h : ''}</span>`;
+  // ── Header colour ──
+  const hdrColor = rec.tier==='strong' ? '#16a34a'
+                 : rec.tier==='lean'   ? '#0070f3'
+                 : '#9ca3af';
 
-  // ── Signal chips ──
-  const sigHtml = rec.signals.slice(0,3).map(s=>{
-    const cls = s==='RLM'?'sig-rlm':s==='STEAM'?'sig-steam':s==='+EV'?'sig-ev':s==='FADE'?'sig-fade':'sig-sharp';
-    return `<span class="rc-signal ${cls}">${s}</span>`;
-  }).join('');
+  // ── Status label ──
+  const statusLabel = started && g.status==='today' ? '🔴 In Progress'
+                    : g.status==='today' ? 'Today'
+                    : g.status==='tmrw'  ? 'Sat 3/21'
+                    : g.status==='done'  ? `Final ${g.fin ? g.fin.a+'-'+g.fin.h : ''}` : '';
 
-  // ── FEATURE 1: Line movement badge ──
-  const lmBadge = lm && lm.absMv >= 2 ? `<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;background:rgba(220,38,38,0.08);color:${lm.signalColor};border:1px solid ${lm.signalColor}33;margin-left:auto;">${lm.icon} ${lm.signal} ${lm.move > 0 ? '+' : ''}${lm.move}</span>` : '';
+  // ── Why text — one plain sentence ──
+  const why = rec.explanation || rec.edgeSummary || 'No strong signals — model edge only';
 
-  // ── Odds strip ──
-  const homeSp = fmtSp(g.curSpread);
-  const awaySp = fmtSp(-g.curSpread);
-  const mv = g.spreadMove;
-  const mvHtml = mv !== 0 ? `<span class="osc-move ${mv<0?'move-up':'move-dn'}">${mv<0?'▲':'▼'}${Math.abs(mv)} vs open</span>` : '';
+  // ── Opening lines banner (in-progress only) ──
+  const openBanner = started && g.status==='today' ? `
+    <div style="margin:0 14px 10px;padding:9px 12px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:13px;">📋</span>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:2px;">Opening Lines</div>
+        <div style="font-size:13px;color:#374151;">${g.away} ${fmtSp(-g.openSpread)} · ${g.home} ${fmtSp(g.openSpread)} · O/U ${g.curTotal}</div>
+      </div>
+      <div style="margin-left:auto;font-size:11px;color:#92400e;font-weight:600;">Check theScore for live line</div>
+    </div>` : '';
 
-  const confColor = rec.tier==='strong' ? 'var(--green)' : 'var(--accent)';
-
-  // ── FEATURE 2: ATS trend summary (compact) ──
-  function atsSummary(ats, name, isFav){
-    if(!ats) return '';
-    const w = isFav ? ats.favW : ats.dogW;
-    const l = isFav ? ats.favL : ats.dogL;
-    const total = w + l;
-    if(total === 0) return '';
-    const pct = Math.round(w / total * 100);
-    const color = pct >= 55 ? '#16a34a' : pct <= 45 ? '#dc2626' : '#6b7280';
-    return `<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--line);">
-      <span style="font-size:12px;color:var(--t2);flex:1;">${name} <span style="color:var(--t3);">as ${isFav?'fav':'dog'}</span></span>
-      <span style="font-size:12px;font-weight:700;color:${color};margin-left:auto;">${w}-${l} ATS (${pct}%)</span>
-    </div>`;
+  // ── ATS snippet (1-2 lines max) ──
+  let atsSnippet = '';
+  if(rec.tier !== 'none'){
+    const focusATS = rec.betOn === 'away_spread' ? awayATS : homeATS;
+    const focusName = rec.betOn === 'away_spread' ? g.away : g.home;
+    const focusIsFav = rec.betOn === 'away_spread' ? !homeIsFav : homeIsFav;
+    if(focusATS){
+      const w = focusIsFav ? focusATS.favW : focusATS.dogW;
+      const l = focusIsFav ? focusATS.favL : focusATS.dogL;
+      const pct = w+l > 0 ? Math.round(w/(w+l)*100) : 50;
+      const atsColor = pct >= 55 ? '#16a34a' : pct <= 45 ? '#dc2626' : '#6b7280';
+      atsSnippet = `<div style="font-size:12px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px solid var(--line);">
+        ${focusName} is <strong style="color:${atsColor};">${w}-${l} ATS as ${focusIsFav?'fav':'dog'}</strong> this season
+        ${focusATS.tourW+focusATS.tourL>0 ? ` · <strong>${focusATS.tourW}-${focusATS.tourL}</strong> in tourney` : ''}
+      </div>`;
+    }
   }
 
-  const homeIsFav = g.curSpread < 0;
-  const atsSummaryHtml = (awayATS || homeATS) ? `
-    <div style="padding:10px 14px 0;">
-      <div style="font-size:10px;font-weight:800;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">ATS Trends — This Season</div>
-      ${awayATS ? atsSummary(awayATS, g.away, !homeIsFav) : ''}
-      ${homeATS ? atsSummary(homeATS, g.home, homeIsFav) : ''}
-      ${homeATS?.note ? `<div style="font-size:11px;color:var(--t3);padding-top:5px;line-height:1.4;">💡 ${homeATS.note}</div>` : ''}
-      ${awayATS?.note && awayATS.note !== homeATS?.note ? `<div style="font-size:11px;color:var(--t3);padding-top:3px;line-height:1.4;">💡 ${awayATS.note}</div>` : ''}
-    </div>` : '';
+  // ── Line movement note ──
+  const lmNote = lmAbs >= 2 ? `<div style="font-size:12px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px solid var(--line);">
+    📈 Line moved <strong style="color:${g.spreadMove<0?'#dc2626':'#16a34a'};">${g.spreadMove>0?'+':''}${g.spreadMove}pts</strong> from ${fmtSp(g.openSpread)} open
+    <span style="color:var(--t4);"> — ${g.spreadMove<0?'public loading '+g.home:'sharp move toward '+g.away}</span>
+  </div>` : '';
 
-  // ── FEATURE 1: Line movement alert panel ──
-  const lmPanel = lm && lm.absMv >= 2 ? `
-    <div style="margin:0 14px 10px;background:${lm.strength==='major'?'rgba(220,38,38,0.06)':'rgba(245,158,11,0.06)'};border:1.5px solid ${lm.strength==='major'?'rgba(220,38,38,0.25)':'rgba(245,158,11,0.25)'};border-radius:8px;padding:10px 12px;">
-      <div style="font-size:10px;font-weight:800;color:${lm.color};letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;">${lm.icon} ${lm.strength.toUpperCase()} LINE MOVE</div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;">
-        <span style="font-size:13px;color:var(--t3);">Opened</span>
-        <span style="font-size:16px;font-weight:700;color:var(--t1);">${fmtSp(g.openSpread)}</span>
-        <span style="font-size:16px;color:var(--t4);">→</span>
-        <span style="font-size:16px;font-weight:700;color:var(--t1);">${fmtSp(g.curSpread)}</span>
-        <span style="font-size:13px;font-weight:700;color:${lm.signalColor};margin-left:auto;">${lm.signal}</span>
-      </div>
-      <div style="font-size:12px;color:var(--t2);line-height:1.5;">${lm.interpretation}</div>
-    </div>` : '';
+  return `<div class="game-card" id="card-${g.id}" style="background:var(--card);border-radius:12px;margin:10px 14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07);border:1.5px solid ${rec.tier==='none'?'var(--line)':hdrColor+'33'};">
 
-  // ── Opening lines banner for in-progress games ──
-  const openingBanner = started ? `
-    <div style="margin:0 14px 10px;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:8px;padding:10px 12px;">
-      <div style="font-size:10px;font-weight:800;color:#d97706;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">📋 Opening Lines (Pre-Game)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-        <div><div style="font-size:15px;font-weight:700;color:#0f1117;">${fmtSp(-g.openSpread)}</div><div style="font-size:10px;color:#6b7280;margin-top:2px;">${g.away.split(' ').pop()} Open</div></div>
-        <div><div style="font-size:15px;font-weight:700;color:#0f1117;">${fmtSp(g.openSpread)}</div><div style="font-size:10px;color:#6b7280;margin-top:2px;">${g.home.split(' ').pop()} Open</div></div>
-        <div><div style="font-size:15px;font-weight:700;color:#0f1117;">${g.curTotal}</div><div style="font-size:10px;color:#6b7280;margin-top:2px;">Total Open</div></div>
-      </div>
-      <div style="font-size:11px;color:#6b7280;margin-top:7px;padding-top:7px;border-top:1px solid #fde68a;">Check theScore or OddsTrader for current live line</div>
-    </div>` : '';
-
-  return `<div class="rec-card tier-${rec.tier}" id="card-${g.id}">
-
-    <div class="rc-meta">
-      ${badge}
-      <span class="rc-meta-txt">${g.round} · ${g.region}</span>
-      <span class="rc-meta-txt">${g.time} ET · ${g.tv}</span>
-      ${sigHtml}
-      ${lmBadge}
-    </div>
-
-    <div class="rc-matchup">
-      <div class="team-block away">
-        <div class="seed-box">${g.awaySeed}</div>
-        <div class="team-abbr-box">${ab(g.away)}</div>
-        <div class="team-info"><div class="team-name">${g.away}</div></div>
-      </div>
-      <div class="vs-divider">vs</div>
-      <div class="team-block home">
-        <div class="seed-box">${g.homeSeed}</div>
-        <div class="team-abbr-box">${ab(g.home)}</div>
-        <div class="team-info"><div class="team-name">${g.home}</div></div>
+    <!-- Header bar -->
+    <div style="background:${hdrColor};padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:11px;font-weight:800;color:#fff;letter-spacing:.4px;text-transform:uppercase;">${rec.emoji} ${rec.label}</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:rgba(255,255,255,.75);">EDGE ${rec.score}/100</span>
+        <span style="font-size:11px;color:rgba(255,255,255,.75);">${statusLabel}</span>
       </div>
     </div>
 
-    ${openingBanner}
-    ${lmPanel}
+    <!-- Opening lines if in progress -->
+    ${openBanner}
 
-    <div class="rc-rec ${rec.cls}" style="margin:0 14px 10px;">
-      <div class="rc-rec-inner">
-        <div class="rec-emoji">${rec.emoji}</div>
-        <div class="rec-body">
-          <div class="rec-tier-lbl ${rec.cls}">${rec.label}</div>
-          <div class="rec-bet">${rec.betText}</div>
-          <div class="rec-odds">${fmt(rec.oddsVal)} theScore</div>
-          ${rec.units > 0 ? `
-          <div class="rec-conf">
-            <div class="conf-bar"><div class="conf-fill" style="width:${rec.conf}%;background:${confColor};"></div></div>
-            <div class="conf-pct">${rec.conf.toFixed(0)}%</div>
-          </div>` : ''}
-        </div>
-        ${rec.units > 0 ? `<div class="rec-right">
-          <div class="rec-dollar">$${rec.stake}</div>
-          <div class="rec-units">${rec.units}u</div>
-        </div>` : ''}
-      </div>
-      ${rec.units > 0 && rec.explanation ? `
-      <div style="padding:0 12px 10px;font-size:12px;color:var(--t2);line-height:1.5;border-top:1px solid var(--line);padding-top:8px;margin-top:0;">
-        <span style="font-size:10px;font-weight:800;color:var(--t4);letter-spacing:.4px;text-transform:uppercase;">Why: </span>${rec.explanation}
-      </div>` : ''}
+    <!-- Body -->
+    <div style="padding:12px 14px ${rec.tier==='none'?'12px':'6px'};">
+
+      <!-- Matchup -->
+      <div style="font-size:12px;color:var(--t3);margin-bottom:6px;">#${g.awaySeed} ${g.away} vs #${g.homeSeed} ${g.home} · ${g.time} ET · ${g.tv} · ${g.round} ${g.region}</div>
+
+      ${rec.tier !== 'none' ? `
+      <!-- The bet -->
+      <div style="font-size:22px;font-weight:800;color:var(--t1);margin-bottom:4px;line-height:1.2;">${rec.betText}</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:10px;">${fmt(rec.oddsVal)} theScore &nbsp;·&nbsp; $${rec.stake} &nbsp;·&nbsp; ${rec.units}u</div>
+
+      <!-- Why -->
+      <div style="font-size:13px;color:var(--t2);line-height:1.55;padding:9px 11px;background:var(--card2);border-radius:8px;border-left:3px solid ${hdrColor};">${why}</div>
+
+      ${atsSnippet}
+      ${lmNote}
+      ` : `
+      <!-- No edge -->
+      <div style="font-size:13px;color:var(--t3);">No clear edge — pass on this game or check back as lines move.</div>
+      `}
     </div>
 
-    <div class="rc-odds-strip" style="margin:0 14px 12px;">
-      <div class="odds-strip-cell ${rec.betOn==='away_spread'?'rec-odds-cell':''}">
-        <div class="osc-label">${g.away.split(' ').pop()} SPR</div>
-        <div class="osc-main">${awaySp}</div>
-        <div class="osc-juice">${fmt(ts.awaySpreadOdds||-110)}</div>
-      </div>
-      <div class="odds-strip-div"></div>
-      <div class="odds-strip-cell ${rec.betOn==='home_spread'?'rec-odds-cell':''}">
-        <div class="osc-label">${g.home.split(' ').pop()} SPR</div>
-        <div class="osc-main">${homeSp}</div>
-        <div class="osc-juice">${fmt(ts.homeSpreadOdds||-110)}</div>
-        ${mvHtml}
-      </div>
-      <div class="odds-strip-div"></div>
-      <div class="odds-strip-cell">
-        <div class="osc-label">Total</div>
-        <div class="osc-main">${g.curTotal}</div>
-        <div class="osc-juice">${fmt(ts.overOdds||-110)}</div>
-      </div>
+    <!-- Action row -->
+    <div style="padding:10px 14px 12px;display:flex;gap:7px;${rec.tier==='none'?'border-top:1px solid var(--line);margin-top:6px;':''}">
+      ${rec.tier !== 'none' ? `
+      <button onclick="openBetModalForGame('${g.id}')" style="flex:2;background:${hdrColor};color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">${tracked?'✓ Tracked':'+ Track Bet'}</button>
+      <button onclick="addParlayLeg('${g.id}','${rec.betOn}')" style="flex:1;background:var(--card2);border:1px solid var(--line2);color:var(--t2);border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">+ Parlay</button>
+      ` : ''}
+      <button onclick="toggleDetail('${g.id}')" id="exp-${g.id}" style="flex:1;background:var(--card2);border:1px solid var(--line2);color:var(--t3);border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer;">Details ⌄</button>
     </div>
 
-    <div class="rc-expand-btn" id="expand-${g.id}" onclick="toggleDetail('${g.id}')">
-      <span>Full analysis · ATS trends · all books</span>
-      <span class="chevron">⌄</span>
-    </div>
+    <!-- Expandable detail panel -->
+    <div id="detail-${g.id}" style="display:none;border-top:1px solid var(--line);padding:12px 14px;">
 
-    <div class="rc-detail" id="detail-${g.id}">
+      <!-- All books odds -->
+      <div style="font-size:10px;font-weight:800;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Odds Comparison</div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+        <tr style="font-size:10px;color:var(--t4);font-weight:700;text-transform:uppercase;letter-spacing:.4px;">
+          <td style="padding:4px 0;">Book</td>
+          <td style="padding:4px 0;text-align:center;">${g.away} Spr</td>
+          <td style="padding:4px 0;text-align:center;">${g.home} Spr</td>
+          <td style="padding:4px 0;text-align:center;">Total</td>
+        </tr>
+        ${[['theScore ★',g.books.thescore,true],['DraftKings',g.books.draftkings,false],['FanDuel',g.books.fanduel,false],['BetMGM',g.books.betmgm,false]].map(([nm,b,isTs])=>{
+          if(!b) return '';
+          return `<tr style="border-top:1px solid var(--line);${isTs?'color:var(--accent);font-weight:600;':''}">
+            <td style="padding:6px 0;font-size:13px;">${nm}</td>
+            <td style="padding:6px 0;font-size:13px;text-align:center;font-variant-numeric:tabular-nums;">${fmtSp(-(b.homeSpread??g.curSpread))} (${fmt(b.awaySpreadOdds??-110)})</td>
+            <td style="padding:6px 0;font-size:13px;text-align:center;font-variant-numeric:tabular-nums;">${fmtSp(b.homeSpread??g.curSpread)} (${fmt(b.homeSpreadOdds??-110)})</td>
+            <td style="padding:6px 0;font-size:13px;text-align:center;font-variant-numeric:tabular-nums;">${b.total??g.curTotal}</td>
+          </tr>`;
+        }).join('')}
+      </table>
 
-      ${atsSummaryHtml}
-
-      <div class="detail-metrics" style="margin-top:${(awayATS||homeATS)?'12px':'0'};">
-        <div class="dm-cell"><div class="dm-val" style="color:${g.pubBet>65?'var(--red)':g.pubBet<35?'var(--green)':'var(--t2)'};">${g.pubBet}%</div><div class="dm-lbl">Bet % ${g.home.split(' ').pop()}</div></div>
-        <div class="dm-cell"><div class="dm-val" style="color:${Math.abs(g.pubBet-g.pubMon)>15?'var(--accent)':'var(--t2)'};">${g.pubMon}%</div><div class="dm-lbl">Money % ${g.home.split(' ').pop()}</div></div>
-        <div class="dm-cell"><div class="dm-val" style="color:${g.ev>0?'var(--green)':'var(--red)'};">${g.ev>0?'+':''}${g.ev}%</div><div class="dm-lbl">Model EV</div></div>
-        <div class="dm-cell"><div class="dm-val">${(g.modelProb*100).toFixed(0)}%</div><div class="dm-lbl">Win Prob</div></div>
-        <div class="dm-cell"><div class="dm-val" style="color:${g.spreadMove!==0?(g.spreadMove<0?'var(--green)':'var(--red)'):'var(--t4)'};">${g.spreadMove>0?'+':''}${g.spreadMove}</div><div class="dm-lbl">Line Move</div></div>
-        <div class="dm-cell"><div class="dm-val" style="color:${g.edgeScore>=50?'var(--green)':g.edgeScore>=28?'var(--accent)':'var(--t4)'};">${g.edgeScore}</div><div class="dm-lbl">EDGE Score</div></div>
-      </div>
-
-      <div class="money-bar-wrap">
-        <div class="money-bar-labels">
-          <span class="money-bar-label" style="color:var(--accent);">${g.pubMon}% money on ${g.home}</span>
-          <span class="money-bar-label" style="color:var(--t4);">${100-g.pubMon}%</span>
-        </div>
-        <div class="money-bar-track" style="margin-bottom:10px;">
-          <div class="money-bar-home" style="width:${g.pubMon}%;"></div>
-          <div class="money-bar-away"></div>
-        </div>
-      </div>
-
-      <div class="book-table-wrap">
-        <table class="book-table">
-          <thead><tr><th>Book</th><th>Away Spr</th><th>Home Spr</th><th>Home ML</th><th>Total</th></tr></thead>
-          <tbody>
-            ${[['theScore ★',g.books.thescore,true],['DraftKings',g.books.draftkings,false],['FanDuel',g.books.fanduel,false],['BetMGM',g.books.betmgm,false]].map(([nm,b,isTs])=>{
-              if(!b) return '';
-              const spOdds = b.homeSpreadOdds ?? -110;
-              const allOdds = [g.books.thescore,g.books.draftkings,g.books.fanduel,g.books.betmgm].filter(Boolean).map(x=>x.homeSpreadOdds??-110);
-              const isBest = spOdds === Math.max(...allOdds);
-              return `<tr ${isTs?'class="ts-row"':''}><td>${nm}</td><td>${fmtSp(-(b.homeSpread??g.curSpread))} (${fmt(b.awaySpreadOdds)})</td><td class="${isBest?'best':''}">${fmtSp(b.homeSpread??g.curSpread)} (${fmt(spOdds)})</td><td>${fmt(b.homeML??g.homeML)}</td><td>${b.total??g.curTotal} (${fmt(b.overOdds)})</td></tr>`;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-
-      <div style="display:flex;gap:8px;margin:12px 14px 14px;">
-        <!-- Feature 2: ATS Trends -->
-      \${(()=>{
-        const hA=getATS(g.home), aA=getATS(g.away);
-        if(!hA && !aA) return '';
-        const isFH = g.curSpread < 0;
-        const rows = [];
-        if(hA){ rows.push(\`<div style="padding:9px 0;border-bottom:1px solid var(--line);">
-          <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">\${g.home} — <span style="color:\${isFH?'var(--red)':'var(--green)'};">\${isFH?'Favorite':'Underdog'}</span> · ATS: \${isFH?hA.favW+'-'+hA.favL:hA.dogW+'-'+hA.dogL} this season · Tourney: \${hA.tourW}-\${hA.tourL}</div>
-          <div style="font-size:12px;color:var(--t3);line-height:1.5;">\${hA.trend}</div>
-        </div>\`); }
-        if(aA){ rows.push(\`<div style="padding:9px 0;">
-          <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">\${g.away} — <span style="color:\${!isFH?'var(--red)':'var(--green)'};">\${!isFH?'Favorite':'Underdog'}</span> · ATS: \${!isFH?aA.favW+'-'+aA.favL:aA.dogW+'-'+aA.dogL} this season · Tourney: \${aA.tourW}-\${aA.tourL}</div>
-          <div style="font-size:12px;color:var(--t3);line-height:1.5;">\${aA.trend}</div>
-        </div>\`); }
-        return \`<div style="padding:10px 14px 0;"><div style="font-size:10px;font-weight:800;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;">📊 ATS Trends</div>\${rows.join('')}</div>\`;
-      })()}
-
-      <button class="detail-track-btn ${tracked?'tracked':''}" onclick="openBetModalForGame('${g.id}')" style="flex:1;">
-          ${tracked ? '✓ Tracked' : '+ Track Bet'}
-        </button>
-        <button onclick="addToParlay('${g.id}')" id="parlay-btn-${g.id}"
-          style="flex:1;background:var(--card2);border:1.5px solid var(--line2);color:var(--t2);border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">
-          ${state.parlay.find(p=>p.id===g.id) ? '✓ In Parlay' : '+ Add to Parlay'}
-        </button>
-      </div>
+      <!-- ATS full detail -->
+      ${homeATS || awayATS ? `
+      <div style="font-size:10px;font-weight:800;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">ATS Trends</div>
+      ${[homeATS ? [homeATS, g.home, homeIsFav] : null, awayATS ? [awayATS, g.away, !homeIsFav] : null].filter(Boolean).map(([ats,name,isFav])=>{
+        const w=isFav?ats.favW:ats.dogW, l=isFav?ats.favL:ats.dogL;
+        const pct=w+l>0?Math.round(w/(w+l)*100):50;
+        const col=pct>=55?'#16a34a':pct<=45?'#dc2626':'#6b7280';
+        return `<div style="padding:7px 0;border-bottom:1px solid var(--line);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <span style="font-size:13px;font-weight:600;">${name} as ${isFav?'favorite':'underdog'}</span>
+            <span style="font-size:13px;font-weight:700;color:${col};">${w}-${l} (${pct}%)</span>
+          </div>
+          <div style="font-size:12px;color:var(--t3);">${ats.trend}</div>
+        </div>`;
+      }).join('')}
+      ` : ''}
     </div>
   </div>`;
 }
 
 function toggleDetail(id){
-  const detail=document.getElementById('detail-'+id);
-  const btn=document.getElementById('expand-'+id);
-  if(!detail||!btn)return;
-  const open=detail.classList.toggle('open');
-  btn.classList.toggle('open',open);
+  const d = document.getElementById('detail-'+id);
+  const b = document.getElementById('exp-'+id);
+  if(!d) return;
+  const open = d.style.display === 'none';
+  d.style.display = open ? 'block' : 'none';
+  if(b) b.textContent = open ? 'Details ⌃' : 'Details ⌄';
 }
+
 
 function filterPicks(f,btn){
   state.filter=f;
@@ -2324,40 +2152,3 @@ init();
 </script>
 </body>
 </html>
-  const stake = units * state.unit;
-  const conf  = Math.min(95, Math.max(5, score * 1.3 + 15));
-  const lineMoveAbs = Math.abs(g.spreadMove || 0);
-
-  // ── Feature 4: Plain-English explanation ──
-  const isFavHome  = g.curSpread < 0;
-  const homeATS2   = getATS(g.home);
-  const awayATS2   = getATS(g.away);
-
-  // Edge score breakdown in plain English
-  const edgeParts = [];
-  if (g.rlm)   edgeParts.push(`Line moved against ${g.pubBet}% public — classic sharp signal`);
-  if (g.steam) edgeParts.push(`Steam move: ${lineMoveAbs}pt shift across all books simultaneously`);
-  const div = Math.abs(g.pubBet - g.pubMon);
-  if (div >= 15) edgeParts.push(`Bet/money split: ${g.pubBet}% of bets vs ${g.pubMon}% of money — sharp dollars on other side`);
-  if (g.ev > 2.5) edgeParts.push(`Model shows ${g.ev > 0 ? '+' : ''}${g.ev}% edge over market implied probability`);
-  if (lineMoveAbs >= 2) edgeParts.push(`Significant line move: ${lineMoveAbs}pts from open — ${g.spreadMove < 0 ? 'steam on ' + g.home : 'steam on ' + g.away}`);
-  if (edgeParts.length === 0) edgeParts.push('Small model edge — no strong sharp signals present');
-  const edgeSummary = edgeParts.slice(0, 3).join(' · ');
-
-  // ATS context for both teams
-  const atsContext = [];
-  if (homeATS2) {
-    const r = isFavHome ? `${homeATS2.favW}-${homeATS2.favL}` : `${homeATS2.dogW}-${homeATS2.dogL}`;
-    atsContext.push(`${g.home} is ${r} ATS as ${isFavHome ? 'favorite' : 'underdog'} this season`);
-    if (homeATS2.tourW + homeATS2.tourL > 0) atsContext.push(`${g.home} tourney ATS: ${homeATS2.tourW}-${homeATS2.tourL}`);
-    atsContext.push(homeATS2.trend);
-  }
-  if (awayATS2) {
-    const r2 = !isFavHome ? `${awayATS2.favW}-${awayATS2.favL}` : `${awayATS2.dogW}-${awayATS2.dogL}`;
-    atsContext.push(`${g.away} is ${r2} ATS as ${!isFavHome ? 'favorite' : 'underdog'} this season`);
-    atsContext.push(awayATS2.trend);
-  }
-
-  return { tier, label, emoji, cls, betText, oddsVal, betOn, signals, reasons,
-           units, stake, conf, score, edgeSummary, atsContext, lineMoveAbs };
-}
