@@ -344,7 +344,7 @@ body {
 <!-- ── HEADER ── -->
 <div class="hdr">
   <span class="hdr-logo">EDGE</span>
-  <span class="hdr-sub">March Madness · Upcoming</span>
+  <span class="hdr-sub">March Madness · Round of 32</span>
   <div class="hdr-right">
     <div class="bankroll-btn" onclick="openBankrollModal()">$<span class="amt" id="bankrollDisplay">1,000</span></div>
     <button onclick="refreshAll()" style="background:none;border:1px solid var(--line2);border-radius:8px;padding:6px 10px;color:var(--t3);cursor:pointer;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;" id="live-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.41-6.47"/></svg><span id="live-lbl">Refresh</span></button>
@@ -719,35 +719,27 @@ const ATS_DB = {
 function getATS(team){ return ATS_DB[team]||null; }
 
 const FALLBACK=[
-  // ── FRI MAR 20 R64 — COMPLETED ──────────────────────────────
-  // All final scores verified NCAA.com / ESPN / Yahoo Mar 20 2026
-  {home:'Kentucky',       away:'Santa Clara',     hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'CBS',  reg:'Midwest',st:'done', sp:-2.5,  opn:-2.5,  tot:157.5,ml:-155, fin:{h:89,a:84}},
-  {home:'Texas Tech',     away:'Akron',           hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'truTV',reg:'West',   st:'done', sp:-7.5,  opn:-7.5,  tot:156.5,ml:-300, fin:{h:91,a:71}},
-  {home:'Arizona',        away:'Long Island',     hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TNT',  reg:'West',   st:'done', sp:-30.5, opn:-30.5, tot:148.5,ml:-100000,fin:{h:92,a:58}},
-  {home:'Virginia',       away:'Wright State',    hs:3, as:14,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TBS',  reg:'West',   st:'done', sp:-17.5, opn:-17.5, tot:145.5,ml:-900, fin:{h:82,a:73}},
-  {home:'Iowa State',     away:'Tennessee State', hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'CBS',  reg:'Midwest',st:'done', sp:-24.5, opn:-24.5, tot:148.5,ml:-100000,fin:{h:108,a:74}},
-  {home:'Alabama',        away:'Hofstra',         hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'truTV',reg:'South',  st:'done', sp:-11.5, opn:-11.5, tot:157.5,ml:-700, fin:{h:90,a:70}},
-  {home:'Utah State',     away:'Villanova',       hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TNT',  reg:'West',   st:'done', sp:-1.5,  opn:-1.5,  tot:146.5,ml:-120, fin:{h:86,a:76}},
-  {home:'Tennessee',      away:'Miami (OH)',      hs:6, as:11,rd:'R64',date:'Fri 3/20',time:'FINAL',   tv:'TBS',  reg:'East',   st:'done', sp:-11.5, opn:-11.5, tot:148.5,ml:-600, fin:{h:78,a:56}},
-  // ── FRI MAR 20 R64 — LIVE / UPCOMING ────────────────────────
-  // Lines from Yahoo/CBS verified Mar 20 2026
-  {home:'Iowa',           away:'Clemson',         hs:9, as:8, rd:'R64',date:'Fri 3/20',time:'6:50PM',  tv:'TNT',  reg:'South',  st:'upcoming',sp:-1.5,  opn:-1.5,  tot:128.5,ml:-120},
-  {home:"St. John's",     away:'Northern Iowa',   hs:5, as:12,rd:'R64',date:'Fri 3/20',time:'7:10PM',  tv:'CBS',  reg:'West',   st:'upcoming',sp:-9.5,  opn:-9.5,  tot:131.5,ml:-535},
-  {home:'UCLA',           away:'UCF',             hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'7:25PM',  tv:'TBS',  reg:'East',   st:'upcoming',sp:-5.5,  opn:-5.5,  tot:151.5,ml:-245},
-  {home:'Purdue',         away:'Queens (NC)',     hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'7:35PM', tv:'truTV',reg:'South',  st:'upcoming',sp:-25.5, opn:-25.5, tot:159.5,ml:-8000},
-  {home:'Miami (FL)',     away:'Missouri',        hs:7, as:10,rd:'R64',date:'Fri 3/20',time:'10:10PM',   tv:'truTV',reg:'West',   st:'upcoming',sp:-1.5,  opn:-1.5,  tot:145.5,ml:-130},
-  {home:'Florida',        away:'Prairie View A&M',hs:1, as:16,rd:'R64',date:'Fri 3/20',time:'9:25PM',  tv:'TNT',  reg:'South',  st:'upcoming',sp:-35.5, opn:-35.5, tot:154.5,ml:-100000},
-  {home:'Kansas',         away:'Cal Baptist',     hs:4, as:13,rd:'R64',date:'Fri 3/20',time:'9:45PM',  tv:'CBS',  reg:'South',  st:'upcoming',sp:-14.5, opn:-14.5, tot:141.5,ml:-1200},
-  {home:'UConn',          away:'Furman',          hs:2, as:15,rd:'R64',date:'Fri 3/20',time:'10:00PM',    tv:'TBS',  reg:'East',   st:'upcoming',sp:-20.5, opn:-20.5, tot:135.5,ml:-2500},
-  // ── SAT MAR 21 R32 — Lines verified ESPN/Yahoo/BetMGM ────────
-  {home:'Michigan',       away:'Saint Louis',     hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'12:10PM', tv:'CBS',  reg:'East',   st:'upcoming', sp:-12.5, opn:-12.5, tot:159.5,ml:-750},
-  {home:'Michigan State', away:'Louisville',      hs:3, as:6, rd:'R32',date:'Sat 3/21',time:'2:45PM',  tv:'CBS',  reg:'East',   st:'upcoming', sp:-6.5,  opn:-6.5,  tot:141.0,ml:-250},
-  {home:'Duke',           away:'TCU',             hs:1, as:9, rd:'R32',date:'Sat 3/21',time:'5:15PM',  tv:'CBS',  reg:'East',   st:'upcoming', sp:-11.5, opn:-11.5, tot:143.5,ml:-600},
-  {home:'Houston',        away:'Texas A&M',       hs:2, as:10,rd:'R32',date:'Sat 3/21',time:'6:10PM',  tv:'TNT',  reg:'South',  st:'upcoming', sp:-8.5,  opn:-8.5,  tot:142.5,ml:-500},
-  {home:'Gonzaga',        away:'Texas',           hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:10PM',  tv:'TBS',  reg:'West',   st:'upcoming', sp:-6.5,  opn:-6.5,  tot:147.5,ml:-230},
-  {home:'Illinois',       away:'VCU',             hs:3, as:11,rd:'R32',date:'Sat 3/21',time:'7:50PM',  tv:'CBS',  reg:'Midwest',st:'upcoming', sp:-10.5, opn:-10.5, tot:151.5,ml:-550},
-  {home:'Vanderbilt',     away:'Nebraska',        hs:5, as:4, rd:'R32',date:'Sat 3/21',time:'8:45PM',  tv:'TNT',  reg:'South',  st:'upcoming', sp:-2.5,  opn:-2.5,  tot:140.5,ml:-140},
-  {home:'Arkansas',       away:'High Point',      hs:4, as:12,rd:'R32',date:'Sat 3/21',time:'9:45PM',  tv:'TBS',  reg:'West',   st:'upcoming', sp:-11.5, opn:-11.5, tot:168.5,ml:-600},
+  // ── SAT MAR 21 R32 — COMPLETED ───────────────────────────────────────────
+  {home:'Michigan',      away:'Saint Louis',   hs:1,  as:9,  rd:'R32',date:'Sat 3/21',time:'FINAL',  tv:'CBS',   reg:'Midwest', st:'done',    sp:-14.5, opn:-14.5, tot:157.5, ml:-900, fin:{h:95,a:72}},
+  {home:'Michigan State',away:'Louisville',    hs:3,  as:6,  rd:'R32',date:'Sat 3/21',time:'FINAL',  tv:'CBS',   reg:'East',    st:'done',    sp:-5.5,  opn:-5.5,  tot:141.0, ml:-220, fin:{h:77,a:69}},
+
+  // ── SAT MAR 21 R32 — UPCOMING ────────────────────────────────────────────
+  {home:'Duke',          away:'TCU',           hs:1,  as:9,  rd:'R32',date:'Sat 3/21',time:'5:15PM', tv:'CBS',   reg:'East',    st:'upcoming', sp:-9.5,  opn:-9.5,  tot:143.5, ml:-450},
+  {home:'Houston',       away:'Texas A&M',     hs:2,  as:10, rd:'R32',date:'Sat 3/21',time:'6:10PM', tv:'TNT',   reg:'South',   st:'upcoming', sp:-7.5,  opn:-8.0,  tot:141.5, ml:-320},
+  {home:'Gonzaga',       away:'Texas',         hs:3,  as:11, rd:'R32',date:'Sat 3/21',time:'7:10PM', tv:'TBS',   reg:'West',    st:'upcoming', sp:-5.5,  opn:-6.0,  tot:148.5, ml:-230},
+  {home:'Illinois',      away:'VCU',           hs:3,  as:11, rd:'R32',date:'Sat 3/21',time:'7:50PM', tv:'CBS',   reg:'Midwest', st:'upcoming', sp:-8.5,  opn:-9.0,  tot:152.5, ml:-380},
+  {home:'Nebraska',      away:'Vanderbilt',    hs:4,  as:5,  rd:'R32',date:'Sat 3/21',time:'8:45PM', tv:'TNT',   reg:'South',   st:'upcoming', sp:1.5,   opn:1.5,   tot:140.5, ml:115},
+  {home:'Arkansas',      away:'High Point',    hs:4,  as:12, rd:'R32',date:'Sat 3/21',time:'9:45PM', tv:'TBS',   reg:'West',    st:'upcoming', sp:-9.5,  opn:-10.0, tot:168.5, ml:-450},
+
+  // ── SUN MAR 22 R32 — UPCOMING ────────────────────────────────────────────
+  {home:'Purdue',        away:'Miami (FL)',    hs:2,  as:7,  rd:'R32',date:'Sun 3/22',time:'12:10PM',tv:'CBS',   reg:'Midwest', st:'upcoming', sp:-6.5,  opn:-6.5,  tot:144.5, ml:-270},
+  {home:'Iowa State',    away:'Kentucky',      hs:2,  as:7,  rd:'R32',date:'Sun 3/22',time:'2:45PM', tv:'CBS',   reg:'South',   st:'upcoming', sp:-4.5,  opn:-4.5,  tot:147.5, ml:-195},
+  {home:'Kansas',        away:"St. John's",   hs:4,  as:5,  rd:'R32',date:'Sun 3/22',time:'5:15PM', tv:'CBS',   reg:'East',    st:'upcoming', sp:-1.5,  opn:-1.5,  tot:149.5, ml:-130},
+  {home:'Virginia',      away:'Tennessee',     hs:3,  as:6,  rd:'R32',date:'Sun 3/22',time:'6:10PM', tv:'TNT',   reg:'East',    st:'upcoming', sp:-2.5,  opn:-2.5,  tot:138.5, ml:-145},
+  {home:'Florida',       away:'Iowa',          hs:1,  as:9,  rd:'R32',date:'Sun 3/22',time:'7:10PM', tv:'TBS',   reg:'South',   st:'upcoming', sp:-12.5, opn:-12.5, tot:153.5, ml:-600},
+  {home:'Arizona',       away:'Utah State',    hs:1,  as:9,  rd:'R32',date:'Sun 3/22',time:'7:50PM', tv:'TBS',   reg:'West',    st:'upcoming', sp:-11.5, opn:-11.5, tot:151.5, ml:-550},
+  {home:'Alabama',       away:'Texas Tech',    hs:4,  as:5,  rd:'R32',date:'Sun 3/22',time:'9:45PM', tv:'TBS',   reg:'South',   st:'upcoming', sp:-1.5,  opn:-2.0,  tot:152.5, ml:-130},
+  {home:'UConn',         away:'UCLA',          hs:2,  as:7,  rd:'R32',date:'Sun 3/22',time:'8:45PM', tv:'TNT',   reg:'East',    st:'upcoming', sp:-4.5,  opn:-4.5,  tot:138.5, ml:-195},
 ];
 
 
