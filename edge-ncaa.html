@@ -549,7 +549,7 @@ body {
 // ════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════
-const SK = 'edge_v10';
+const SK = 'edge_v11';
 let state = {
   bankroll:1000, unit:25, bets:[], games:[],
   defaultBook:'theScore Bet',
@@ -574,38 +574,40 @@ function saveState(){ try{localStorage.setItem(SK,JSON.stringify(state));}catch(
 // ════════════════════════════════════════
 
 // Parse "7:35PM" + "Fri 3/20" or "Sat 3/21" → Date object in ET
-function parseGameTime(timeStr, dateStr){
+function parseGameTime(timeStr, dateStr, ct){
+  // Prefer ISO commence_time if available
+  if(ct){ const d=new Date(ct); return isNaN(d)?null:d; }
   if(!timeStr || timeStr==='FINAL') return null;
   try{
-    // Determine date
     const now = new Date();
     const yr = now.getFullYear();
-    let month = now.getMonth(); // 0-indexed
-    let day = now.getDate();
+    let month = now.getMonth(), day = now.getDate();
     if(dateStr && dateStr.includes('3/20')){ month=2; day=20; }
     else if(dateStr && dateStr.includes('3/21')){ month=2; day=21; }
     else if(dateStr && dateStr.includes('3/22')){ month=2; day=22; }
-
-    // Parse time "7:35PM" → hours/mins
+    else if(dateStr && dateStr.includes('3/23')){ month=2; day=23; }
     const m = timeStr.match(/(\d+):(\d+)(AM|PM)/i);
     if(!m) return null;
-    let hrs = parseInt(m[1]);
-    const mins = parseInt(m[2]);
-    const ampm = m[3].toUpperCase();
-    if(ampm==='PM' && hrs!==12) hrs += 12;
-    if(ampm==='AM' && hrs===12) hrs = 0;
-
-    // Build UTC date — ET is UTC-4 in March (EDT)
-    const etOffsetHours = 4;
-    const utcHrs = hrs + etOffsetHours;
-    return new Date(Date.UTC(yr, month, day, utcHrs, mins, 0));
+    let hrs=parseInt(m[1]); const mins=parseInt(m[2]), ampm=m[3].toUpperCase();
+    if(ampm==='PM'&&hrs!==12) hrs+=12;
+    if(ampm==='AM'&&hrs===12) hrs=0;
+    return new Date(Date.UTC(yr,month,day,hrs+4,mins,0));
   }catch(e){ return null; }
 }
 
 // Returns true if game start is within the window:
 // Started up to 3 hours ago OR starts any time in the future
 function isInWindow(game){
-  return game.status !== 'done';
+  if(game.status === 'done') return false;
+  // If game has a proper commence_time, compare to now
+  // Show games that haven't started yet OR started within last 30 min
+  if(game.ct){
+    const gameTime = new Date(game.ct).getTime();
+    const now = Date.now();
+    return gameTime > now - 30*60*1000; // future or started <30min ago
+  }
+  // No commence_time — always show non-done games
+  return true;
 }
 
 // Returns true if game has likely started (game time is in the past)
@@ -720,26 +722,24 @@ function getATS(team){ return ATS_DB[team]||null; }
 
 const FALLBACK=[
   // ── SAT MAR 21 R32 — COMPLETED ───────────────────────────────────────────
-  {home:'Michigan',      away:'Saint Louis',   hs:1,  as:9,  rd:'R32',date:'Sat 3/21',time:'FINAL',  tv:'CBS',   reg:'Midwest', st:'done',    sp:-14.5, opn:-14.5, tot:157.5, ml:-900, fin:{h:95,a:72}},
-  {home:'Michigan State',away:'Louisville',    hs:3,  as:6,  rd:'R32',date:'Sat 3/21',time:'FINAL',  tv:'CBS',   reg:'East',    st:'done',    sp:-5.5,  opn:-5.5,  tot:141.0, ml:-220, fin:{h:77,a:69}},
-
-  // ── SAT MAR 21 R32 — UPCOMING ────────────────────────────────────────────
-  {home:'Duke',          away:'TCU',           hs:1,  as:9,  rd:'R32',date:'Sat 3/21',time:'5:15PM', tv:'CBS',   reg:'East',    st:'upcoming', sp:-9.5,  opn:-9.5,  tot:143.5, ml:-450},
-  {home:'Houston',       away:'Texas A&M',     hs:2,  as:10, rd:'R32',date:'Sat 3/21',time:'6:10PM', tv:'TNT',   reg:'South',   st:'upcoming', sp:-7.5,  opn:-8.0,  tot:141.5, ml:-320},
-  {home:'Gonzaga',       away:'Texas',         hs:3,  as:11, rd:'R32',date:'Sat 3/21',time:'7:10PM', tv:'TBS',   reg:'West',    st:'upcoming', sp:-5.5,  opn:-6.0,  tot:148.5, ml:-230},
-  {home:'Illinois',      away:'VCU',           hs:3,  as:11, rd:'R32',date:'Sat 3/21',time:'7:50PM', tv:'CBS',   reg:'Midwest', st:'upcoming', sp:-8.5,  opn:-9.0,  tot:152.5, ml:-380},
-  {home:'Nebraska',      away:'Vanderbilt',    hs:4,  as:5,  rd:'R32',date:'Sat 3/21',time:'8:45PM', tv:'TNT',   reg:'South',   st:'upcoming', sp:1.5,   opn:1.5,   tot:140.5, ml:115},
-  {home:'Arkansas',      away:'High Point',    hs:4,  as:12, rd:'R32',date:'Sat 3/21',time:'9:45PM', tv:'TBS',   reg:'West',    st:'upcoming', sp:-9.5,  opn:-10.0, tot:168.5, ml:-450},
+  {home:'Michigan',       away:'Saint Louis',  hs:1, as:9,  rd:'R32',tv:'CBS', reg:'Midwest',st:'done',    ct:'2026-03-21T16:10:00Z',sp:-14.5,opn:-14.5,tot:157.5,ml:-900,fin:{h:95,a:72}},
+  {home:'Michigan State', away:'Louisville',   hs:3, as:6,  rd:'R32',tv:'CBS', reg:'East',   st:'done',    ct:'2026-03-21T18:45:00Z',sp:-5.5, opn:-5.5, tot:141.0,ml:-220,fin:{h:77,a:69}},
+  {home:'Duke',           away:'TCU',          hs:1, as:9,  rd:'R32',tv:'CBS', reg:'East',   st:'done',    ct:'2026-03-21T21:15:00Z',sp:-9.5, opn:-9.5, tot:143.5,ml:-450,fin:{h:0, a:0}},
+  {home:'Houston',        away:'Texas A&M',    hs:2, as:10, rd:'R32',tv:'TNT', reg:'South',  st:'done',    ct:'2026-03-21T22:10:00Z',sp:-7.5, opn:-8.0, tot:141.5,ml:-320,fin:{h:0, a:0}},
+  {home:'Gonzaga',        away:'Texas',        hs:3, as:11, rd:'R32',tv:'TBS', reg:'West',   st:'done',    ct:'2026-03-21T23:10:00Z',sp:-5.5, opn:-6.0, tot:148.5,ml:-230,fin:{h:0, a:0}},
+  {home:'Illinois',       away:'VCU',          hs:3, as:11, rd:'R32',tv:'CBS', reg:'Midwest',st:'done',    ct:'2026-03-21T23:50:00Z',sp:-8.5, opn:-9.0, tot:152.5,ml:-380,fin:{h:0, a:0}},
+  {home:'Nebraska',       away:'Vanderbilt',   hs:4, as:5,  rd:'R32',tv:'TNT', reg:'South',  st:'done',    ct:'2026-03-22T00:45:00Z',sp:1.5,  opn:1.5,  tot:140.5,ml:115, fin:{h:0, a:0}},
+  {home:'Arkansas',       away:'High Point',   hs:4, as:12, rd:'R32',tv:'TBS', reg:'West',   st:'done',    ct:'2026-03-22T01:45:00Z',sp:-9.5, opn:-10.0,tot:168.5,ml:-450,fin:{h:0, a:0}},
 
   // ── SUN MAR 22 R32 — UPCOMING ────────────────────────────────────────────
-  {home:'Purdue',        away:'Miami (FL)',    hs:2,  as:7,  rd:'R32',date:'Sun 3/22',time:'12:10PM',tv:'CBS',   reg:'Midwest', st:'upcoming', sp:-6.5,  opn:-6.5,  tot:144.5, ml:-270},
-  {home:'Iowa State',    away:'Kentucky',      hs:2,  as:7,  rd:'R32',date:'Sun 3/22',time:'2:45PM', tv:'CBS',   reg:'South',   st:'upcoming', sp:-4.5,  opn:-4.5,  tot:147.5, ml:-195},
-  {home:'Kansas',        away:"St. John's",   hs:4,  as:5,  rd:'R32',date:'Sun 3/22',time:'5:15PM', tv:'CBS',   reg:'East',    st:'upcoming', sp:-1.5,  opn:-1.5,  tot:149.5, ml:-130},
-  {home:'Virginia',      away:'Tennessee',     hs:3,  as:6,  rd:'R32',date:'Sun 3/22',time:'6:10PM', tv:'TNT',   reg:'East',    st:'upcoming', sp:-2.5,  opn:-2.5,  tot:138.5, ml:-145},
-  {home:'Florida',       away:'Iowa',          hs:1,  as:9,  rd:'R32',date:'Sun 3/22',time:'7:10PM', tv:'TBS',   reg:'South',   st:'upcoming', sp:-12.5, opn:-12.5, tot:153.5, ml:-600},
-  {home:'Arizona',       away:'Utah State',    hs:1,  as:9,  rd:'R32',date:'Sun 3/22',time:'7:50PM', tv:'TBS',   reg:'West',    st:'upcoming', sp:-11.5, opn:-11.5, tot:151.5, ml:-550},
-  {home:'Alabama',       away:'Texas Tech',    hs:4,  as:5,  rd:'R32',date:'Sun 3/22',time:'9:45PM', tv:'TBS',   reg:'South',   st:'upcoming', sp:-1.5,  opn:-2.0,  tot:152.5, ml:-130},
-  {home:'UConn',         away:'UCLA',          hs:2,  as:7,  rd:'R32',date:'Sun 3/22',time:'8:45PM', tv:'TNT',   reg:'East',    st:'upcoming', sp:-4.5,  opn:-4.5,  tot:138.5, ml:-195},
+  {home:'Purdue',         away:'Miami (FL)',   hs:2, as:7,  rd:'R32',tv:'CBS', reg:'Midwest',st:'upcoming',ct:'2026-03-22T16:10:00Z',sp:-6.0, opn:-6.5, tot:144.5,ml:-270},
+  {home:'Iowa State',     away:'Kentucky',     hs:2, as:7,  rd:'R32',tv:'CBS', reg:'South',  st:'upcoming',ct:'2026-03-22T18:45:00Z',sp:-4.0, opn:-4.5, tot:147.5,ml:-195},
+  {home:'Kansas',         away:"St. John's",   hs:4, as:5,  rd:'R32',tv:'CBS', reg:'East',   st:'upcoming',ct:'2026-03-22T21:15:00Z',sp:-1.5, opn:-1.5, tot:149.5,ml:-130},
+  {home:'Virginia',       away:'Tennessee',    hs:3, as:6,  rd:'R32',tv:'TNT', reg:'East',   st:'upcoming',ct:'2026-03-22T22:10:00Z',sp:-2.0, opn:-2.5, tot:138.5,ml:-145},
+  {home:'Florida',        away:'Iowa',         hs:1, as:9,  rd:'R32',tv:'TBS', reg:'South',  st:'upcoming',ct:'2026-03-22T23:10:00Z',sp:-12.0,opn:-12.5,tot:153.5,ml:-600},
+  {home:'Arizona',        away:'Utah State',   hs:1, as:9,  rd:'R32',tv:'TBS', reg:'West',   st:'upcoming',ct:'2026-03-22T23:50:00Z',sp:-10.5,opn:-11.5,tot:151.5,ml:-550},
+  {home:'UConn',          away:'UCLA',         hs:2, as:7,  rd:'R32',tv:'TNT', reg:'East',   st:'upcoming',ct:'2026-03-23T00:45:00Z',sp:-4.5, opn:-4.5, tot:138.5,ml:-195},
+  {home:'Alabama',        away:'Texas Tech',   hs:4, as:5,  rd:'R32',tv:'TBS', reg:'South',  st:'upcoming',ct:'2026-03-23T01:45:00Z',sp:-1.0, opn:-2.0, tot:152.5,ml:-115},
 ];
 
 
@@ -876,8 +876,12 @@ function buildGame(fb, live){
     id,
     home: fb.home, away: fb.away,
     homeSeed: fb.hs||'?', awaySeed: fb.as||'?',
-    round: fb.rd, date: fb.date, time: fb.time, tv: fb.tv,
+    round: fb.rd, tv: fb.tv,
     region: fb.reg, status: fb.st,
+    ct: fb.ct || null,
+    // Derive display strings dynamically from ISO commence time
+    time: fb.ct ? (()=>{ const d=new Date(fb.ct); return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}); })() : (fb.time||'TBD'),
+    date: fb.ct ? (()=>{ const d=new Date(fb.ct); return d.toLocaleDateString('en-US',{weekday:'short',month:'numeric',day:'numeric',timeZone:'America/New_York'}); })() : (fb.date||''),
     books: {thescore:ts, draftkings:dk, fanduel:fd, betmgm:mgm},
     curSpread: curSp, openSpread: fb.opn, spreadMove: mv,
     curTotal: curTot, homeML, awayML,
@@ -1505,7 +1509,7 @@ function renderToday(){
       const ro = {R64:0, R32:1, S16:2, E8:3, F4:4, NCG:5};
       const ra = ro[a.round]??9, rb = ro[b.round]??9;
       if(ra !== rb) return ra - rb;
-      const ta = parseGameTime(a.time, a.date), tb = parseGameTime(b.time, b.date);
+      const ta = parseGameTime(a.time, a.date, a.ct), tb = parseGameTime(b.time, b.date, b.ct);
       if(ta && tb) return ta - tb;
       return 0;
     });
