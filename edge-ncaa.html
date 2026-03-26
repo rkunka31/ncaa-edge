@@ -344,7 +344,7 @@ body {
 <!-- ── HEADER ── -->
 <div class="hdr">
   <span class="hdr-logo">EDGE</span>
-  <span class="hdr-sub">March Madness · Round of 32</span>
+  <span class="hdr-sub">March Madness · Sweet 16</span>
   <div class="hdr-right">
     <div class="bankroll-btn" onclick="openBankrollModal()">$<span class="amt" id="bankrollDisplay">1,000</span></div>
     <button onclick="refreshAll()" style="background:none;border:1px solid var(--line2);border-radius:8px;padding:6px 10px;color:var(--t3);cursor:pointer;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;" id="live-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.41-6.47"/></svg><span id="live-lbl">Refresh</span></button>
@@ -549,7 +549,7 @@ body {
 // ════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════
-const SK = 'edge_v11';
+const SK = 'edge_v12';
 let state = {
   bankroll:1000, unit:25, bets:[], games:[],
   defaultBook:'theScore Bet',
@@ -604,7 +604,7 @@ function isInWindow(game){
   if(game.ct){
     const gameTime = new Date(game.ct).getTime();
     const now = Date.now();
-    return gameTime > now - 30*60*1000; // future or started <30min ago
+    return gameTime > now - 3*60*60*1000; // future or started <3hrs ago
   }
   // No commence_time — always show non-done games
   return true;
@@ -721,25 +721,17 @@ const ATS_DB = {
 function getATS(team){ return ATS_DB[team]||null; }
 
 const FALLBACK=[
-  // ── SAT MAR 21 R32 — COMPLETED ───────────────────────────────────────────
-  {home:'Michigan',       away:'Saint Louis',  hs:1, as:9,  rd:'R32',tv:'CBS', reg:'Midwest',st:'done',    ct:'2026-03-21T16:10:00Z',sp:-14.5,opn:-14.5,tot:157.5,ml:-900,fin:{h:95,a:72}},
-  {home:'Michigan State', away:'Louisville',   hs:3, as:6,  rd:'R32',tv:'CBS', reg:'East',   st:'done',    ct:'2026-03-21T18:45:00Z',sp:-5.5, opn:-5.5, tot:141.0,ml:-220,fin:{h:77,a:69}},
-  {home:'Duke',           away:'TCU',          hs:1, as:9,  rd:'R32',tv:'CBS', reg:'East',   st:'done',    ct:'2026-03-21T21:15:00Z',sp:-9.5, opn:-9.5, tot:143.5,ml:-450,fin:{h:0, a:0}},
-  {home:'Houston',        away:'Texas A&M',    hs:2, as:10, rd:'R32',tv:'TNT', reg:'South',  st:'done',    ct:'2026-03-21T22:10:00Z',sp:-7.5, opn:-8.0, tot:141.5,ml:-320,fin:{h:0, a:0}},
-  {home:'Gonzaga',        away:'Texas',        hs:3, as:11, rd:'R32',tv:'TBS', reg:'West',   st:'done',    ct:'2026-03-21T23:10:00Z',sp:-5.5, opn:-6.0, tot:148.5,ml:-230,fin:{h:0, a:0}},
-  {home:'Illinois',       away:'VCU',          hs:3, as:11, rd:'R32',tv:'CBS', reg:'Midwest',st:'done',    ct:'2026-03-21T23:50:00Z',sp:-8.5, opn:-9.0, tot:152.5,ml:-380,fin:{h:0, a:0}},
-  {home:'Nebraska',       away:'Vanderbilt',   hs:4, as:5,  rd:'R32',tv:'TNT', reg:'South',  st:'done',    ct:'2026-03-22T00:45:00Z',sp:1.5,  opn:1.5,  tot:140.5,ml:115, fin:{h:0, a:0}},
-  {home:'Arkansas',       away:'High Point',   hs:4, as:12, rd:'R32',tv:'TBS', reg:'West',   st:'done',    ct:'2026-03-22T01:45:00Z',sp:-9.5, opn:-10.0,tot:168.5,ml:-450,fin:{h:0, a:0}},
+  // ── THU MAR 26 SWEET 16 (South & West) ───────────────────────────────────
+  {home:'Purdue',       away:'Texas',       hs:2,  as:11, rd:'S16',tv:'CBS',   reg:'West',   st:'upcoming',ct:'2026-03-26T23:10:00Z',sp:-7.5, opn:-7.5, tot:148.5,ml:-360},
+  {home:'Nebraska',     away:'Iowa',        hs:4,  as:9,  rd:'S16',tv:'TBS',   reg:'South',  st:'upcoming',ct:'2026-03-26T23:30:00Z',sp:-2.5, opn:-1.5, tot:134.5,ml:-140},
+  {home:'Arizona',      away:'Arkansas',    hs:1,  as:4,  rd:'S16',tv:'CBS',   reg:'West',   st:'upcoming',ct:'2026-03-27T01:45:00Z',sp:-7.5, opn:-8.5, tot:167.0,ml:-360},
+  {home:'Houston',      away:'Illinois',    hs:2,  as:3,  rd:'S16',tv:'TBS',   reg:'South',  st:'upcoming',ct:'2026-03-27T02:05:00Z',sp:-3.5, opn:-3.5, tot:139.5,ml:-175},
 
-  // ── SUN MAR 22 R32 — UPCOMING ────────────────────────────────────────────
-  {home:'Purdue',         away:'Miami (FL)',   hs:2, as:7,  rd:'R32',tv:'CBS', reg:'Midwest',st:'upcoming',ct:'2026-03-22T16:10:00Z',sp:-6.0, opn:-6.5, tot:144.5,ml:-270},
-  {home:'Iowa State',     away:'Kentucky',     hs:2, as:7,  rd:'R32',tv:'CBS', reg:'South',  st:'upcoming',ct:'2026-03-22T18:45:00Z',sp:-4.0, opn:-4.5, tot:147.5,ml:-195},
-  {home:'Kansas',         away:"St. John's",   hs:4, as:5,  rd:'R32',tv:'CBS', reg:'East',   st:'upcoming',ct:'2026-03-22T21:15:00Z',sp:-1.5, opn:-1.5, tot:149.5,ml:-130},
-  {home:'Virginia',       away:'Tennessee',    hs:3, as:6,  rd:'R32',tv:'TNT', reg:'East',   st:'upcoming',ct:'2026-03-22T22:10:00Z',sp:-2.0, opn:-2.5, tot:138.5,ml:-145},
-  {home:'Florida',        away:'Iowa',         hs:1, as:9,  rd:'R32',tv:'TBS', reg:'South',  st:'upcoming',ct:'2026-03-22T23:10:00Z',sp:-12.0,opn:-12.5,tot:153.5,ml:-600},
-  {home:'Arizona',        away:'Utah State',   hs:1, as:9,  rd:'R32',tv:'TBS', reg:'West',   st:'upcoming',ct:'2026-03-22T23:50:00Z',sp:-10.5,opn:-11.5,tot:151.5,ml:-550},
-  {home:'UConn',          away:'UCLA',         hs:2, as:7,  rd:'R32',tv:'TNT', reg:'East',   st:'upcoming',ct:'2026-03-23T00:45:00Z',sp:-4.5, opn:-4.5, tot:138.5,ml:-195},
-  {home:'Alabama',        away:'Texas Tech',   hs:4, as:5,  rd:'R32',tv:'TBS', reg:'South',  st:'upcoming',ct:'2026-03-23T01:45:00Z',sp:-1.0, opn:-2.0, tot:152.5,ml:-115},
+  // ── FRI MAR 27 SWEET 16 (East & Midwest) ─────────────────────────────────
+  {home:'Duke',         away:"St. John's",  hs:1,  as:5,  rd:'S16',tv:'CBS',   reg:'East',   st:'upcoming',ct:'2026-03-27T23:10:00Z',sp:-6.5, opn:-6.5, tot:141.5,ml:-290},
+  {home:'Michigan',     away:'Alabama',     hs:1,  as:4,  rd:'S16',tv:'TBS',   reg:'Midwest',st:'upcoming',ct:'2026-03-27T23:35:00Z',sp:-10.0,opn:-10.5,tot:174.0,ml:-575},
+  {home:'UConn',        away:'Michigan State',hs:2, as:3, rd:'S16',tv:'CBS',   reg:'East',   st:'upcoming',ct:'2026-03-28T01:45:00Z',sp:-1.5, opn:-1.5, tot:136.5,ml:-130},
+  {home:'Iowa State',   away:'Tennessee',   hs:2,  as:6,  rd:'S16',tv:'TBS',   reg:'Midwest',st:'upcoming',ct:'2026-03-28T02:10:00Z',sp:-4.5, opn:-4.0, tot:134.0,ml:-200},
 ];
 
 
